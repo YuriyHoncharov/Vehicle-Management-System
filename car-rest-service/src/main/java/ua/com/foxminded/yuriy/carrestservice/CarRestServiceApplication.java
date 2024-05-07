@@ -12,12 +12,12 @@ public class CarRestServiceApplication {
 		SpringApplication.run(CarRestServiceApplication.class, args);
 	}
 
-	@Bean
-	public FlywayMigrationStrategy flywayMigrationStrategy() {
-		return flyway -> {
-			flyway.clean();
-			flyway.migrate();
-		};
-	}
+//	@Bean
+//	public FlywayMigrationStrategy flywayMigrationStrategy() {
+//		return flyway -> {
+//			flyway.clean();
+//			flyway.migrate();
+//		};
+//	}
 
 }

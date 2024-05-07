@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
+import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CategoryRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 
@@ -36,6 +37,24 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public Optional<Category> getById(Long id) {
 		return categoryRepository.findById(id);
+	}
+
+	@Override
+	public Optional<Category> getByName(String name) {
+		return Optional
+				.of(categoryRepository.getByName(name).orElseThrow(() -> new EntityNotFoundException("Entity non found")));
+	}
+
+	@Override
+	public Category save(String category) {
+		Optional<Category> existingCategory = categoryRepository.getByName(category);
+		if (!existingCategory.isPresent()) {
+			Category newCategory = new Category();
+			newCategory.setName(category);
+			return categoryRepository.save(newCategory);
+		} else {
+			return existingCategory.get();
+		}
 	}
 
 }

@@ -11,5 +11,7 @@ public interface CategoryService {
 	Category save(Category category);
 	Page<Category> getAll(Pageable pageable);
 	Optional <Category> getById(Long id);
+	Optional <Category> getByName(String name);
+	Category save(String category);
 
 }

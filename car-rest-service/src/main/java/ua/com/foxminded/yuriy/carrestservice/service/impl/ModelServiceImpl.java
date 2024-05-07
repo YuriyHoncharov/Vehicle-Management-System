@@ -35,4 +35,21 @@ public class ModelServiceImpl implements ModelService {
 	public Optional<Model> getById(Long id) {
 		return modelRepository.findById(id);
 	}
+
+	@Override
+	public Optional<Model> getByName(String name) {
+		return modelRepository.getByName(name);
+	}
+
+	@Override
+	public Model save(String modelName) {
+		Optional<Model>existingModel = modelRepository.getByName(modelName);
+		if (!existingModel.isPresent()) {
+			Model model = new Model();
+			model.setName(modelName);
+			return modelRepository.save(model);
+		} else {
+			return existingModel.get();
+		}
+	}
 }

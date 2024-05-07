@@ -15,5 +15,9 @@ public interface ModelService {
 	Page<Model> getAll(Pageable pageable);
 
 	Optional <Model> getById(Long id);
+	
+	Optional <Model> getByName(String name);
+	
+	Model save(String modelName);	
 
 }

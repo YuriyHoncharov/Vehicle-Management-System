@@ -1,16 +1,13 @@
 package ua.com.foxminded.yuriy.carrestservice.entities;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
+import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table
 
 public class Brand {
 
@@ -29,8 +27,6 @@ public class Brand {
 	@Column(name = "name")
 	private String name;
 
-	@ManyToOne(cascade = CascadeType.MERGE)
-	@JoinTable(name = "BrandToModelReference", joinColumns = @JoinColumn(name = "model_id"), inverseJoinColumns = @JoinColumn(name = "brand_Id"))
-	private List<Model> models;
-	
+	@OneToMany(mappedBy = "brand")
+	private Set<Model> models;	
 }
