@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class CarDto {
 	private String brand;
-	private String Model;
+	private String model;
 	private int productionYear;
 	private Set<String> categories;
 }

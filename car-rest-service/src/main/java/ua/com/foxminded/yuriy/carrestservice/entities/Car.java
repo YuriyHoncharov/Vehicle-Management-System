@@ -1,8 +1,6 @@
 package ua.com.foxminded.yuriy.carrestservice.entities;
 
-import java.util.List;
 import java.util.Set;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table
+@Table(name = "Brand")
 
 public class Brand {
 
@@ -24,7 +24,7 @@ public class Brand {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "name")
+	@Column(nullable = false, unique = true)
 	private String name;
 
 	@OneToMany(mappedBy = "brand")

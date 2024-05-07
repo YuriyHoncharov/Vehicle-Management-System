@@ -7,25 +7,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import org.springframework.stereotype.Component;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.AllArgsConstructor;
-import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
-import ua.com.foxminded.yuriy.carrestservice.entities.Car;
-import ua.com.foxminded.yuriy.carrestservice.entities.Category;
-import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.CSVDataDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.FileReadingException;
-import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
-import ua.com.foxminded.yuriy.carrestservice.service.CarService;
-import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
-import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
+
 
 @Component
 @AllArgsConstructor

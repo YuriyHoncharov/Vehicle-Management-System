@@ -53,17 +53,17 @@ public class BrandServiceImpl implements BrandService {
 	public Brand save(String brandName, Model model) {
 		
 		Optional<Brand> existingBrand = brandRepository.getByName(brandName);
-		Brand brand = new Brand();
+		Brand brand;
 		
 		if (!existingBrand.isPresent()) {
 			brand = new Brand();
 			brand.setName(brandName);
-			brand.setModels(new HashSet<>());
+	//		brand.setModels(new HashSet<>());
 		} else {
 			brand = existingBrand.get();
 		}
 
-		brand.getModels().add(model);
+	//	brand.getModels().add(model);
 		return brandRepository.save(brand);
 
 	}
