@@ -20,9 +20,7 @@ import ua.com.foxminded.yuriy.carrestservice.exception.FileReadingException;
 
 
 @Component
-@AllArgsConstructor
 public class CSVDataExtractor {
-
 	
 
 	public List<CSVDataDto> uploadFromCSV(File file) {

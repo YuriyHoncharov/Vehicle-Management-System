@@ -1,17 +1,14 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
@@ -24,12 +21,11 @@ import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
-import ua.com.foxminded.yuriy.carrestservice.utils.CSVDataExtractor;
 import ua.com.foxminded.yuriy.carrestservice.utils.FilterUtils;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CarConverter;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CarServiceImpl implements CarService {
 
 	private final CarRepository carRepository;
@@ -39,7 +35,9 @@ public class CarServiceImpl implements CarService {
 	private final FilterUtils filterUtils;
 	private final SpecificationManager<Car> specificationManager;
 	private final CarConverter carConverter;
-
+	
+	
+		
 	private static final String SPLIT_TO_ARRAY = ",";
 
 	@Override
@@ -99,5 +97,4 @@ public class CarServiceImpl implements CarService {
 		}
 
 	}
-
 }

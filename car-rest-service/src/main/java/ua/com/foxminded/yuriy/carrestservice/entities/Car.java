@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,14 +30,16 @@ public class Car {
 
 	@Column(name = "object_Id")
 	private String objectId;
-
-	@Column(name = "brand_Id")
+	
+	@ManyToOne
+	@JoinColumn(name = "brand_Id")
 	private Brand brand;
 
-	@Column(name = "productionYear")
+	@Column(name = "production_year")
 	private int productionYear;
-
-	@Column(name = "model_Id")
+	
+	@OneToOne
+	@JoinColumn(name = "model_Id")
 	private Model model;
 
 	@ManyToMany
