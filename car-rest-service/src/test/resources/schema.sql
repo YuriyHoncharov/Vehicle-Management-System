@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS CarToCategoryReferences CASCADE;
+DROP TABLE IF EXISTS Car CASCADE;
+DROP TABLE IF EXISTS Model CASCADE;
+DROP TABLE IF EXISTS Brand CASCADE;
+DROP TABLE IF EXISTS Category CASCADE;
+
 CREATE TABLE IF NOT EXISTS Category(
 id SERIAL PRIMARY KEY,
 name TEXT NOT NULL UNIQUE
@@ -20,7 +26,7 @@ id SERIAL PRIMARY KEY,
 object_Id text NOT NULL,
 brand_Id int,
 FOREIGN KEY (brand_Id) REFERENCES Brand (id),
-productionYear int,
+production_year int,
 model_Id int,
 FOREIGN KEY (model_Id) REFERENCES Model (id)
 );
