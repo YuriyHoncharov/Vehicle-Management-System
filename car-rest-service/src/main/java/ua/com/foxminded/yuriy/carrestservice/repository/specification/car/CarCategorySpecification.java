@@ -22,7 +22,7 @@ public class CarCategorySpecification implements SpecificationProvider<Car> {
 			SetJoin<Car, Category> join = root.joinSet(FIELD_CAR_PARAM, JoinType.LEFT);
 			CriteriaBuilder.In<String> predicate = criteriaBuilder.in(join.get(FIELD_CATEGORY_PARAM));
 			for (String category : categories) {
-				predicate.value(category.toUpperCase());
+				predicate.value(category);
 			}
 			return criteriaBuilder.and(predicate);
 		});

@@ -1,33 +1,33 @@
-CREATE TABLE IF NOT EXISTS Category(
+CREATE TABLE IF NOT EXISTS category(
 id SERIAL PRIMARY KEY,
 name TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS Brand (
+CREATE TABLE IF NOT EXISTS brand (
 id SERIAL PRIMARY KEY,
 name TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS Model (
+CREATE TABLE IF NOT EXISTS model (
 id SERIAL PRIMARY KEY,
 name TEXT NOT NULL UNIQUE,
 brand_Id int,
-FOREIGN KEY (brand_Id) REFERENCES Brand (id)
+FOREIGN KEY (brand_Id) REFERENCES brand (id)
 );
 
-CREATE TABLE IF NOT EXISTS Car(
+CREATE TABLE IF NOT EXISTS car(
 id SERIAL PRIMARY KEY,
 object_Id text NOT NULL,
 brand_Id int,
-FOREIGN KEY (brand_Id) REFERENCES Brand (id),
-productionYear int,
+FOREIGN KEY (brand_Id) REFERENCES brand (id),
+production_year int,
 model_Id int,
-FOREIGN KEY (model_Id) REFERENCES Model (id)
+FOREIGN KEY (model_Id) REFERENCES model (id)
 );
 
-CREATE TABLE IF NOT EXISTS CarToCategoryReferences(
+CREATE TABLE IF NOT EXISTS car_category(
 car_Id int,
-FOREIGN KEY (car_Id) REFERENCES Car (id),
+FOREIGN KEY (car_Id) REFERENCES car (id),
 category_Id int,
-FOREIGN KEY (category_Id) REFERENCES Category (id)
+FOREIGN KEY (category_Id) REFERENCES category (id)
 );

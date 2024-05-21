@@ -1,19 +1,26 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
+import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
+import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
+import ua.com.foxminded.yuriy.carrestservice.utils.mapper.ModelConverter;
 
 @Service
 @RequiredArgsConstructor
 public class ModelServiceImpl implements ModelService {
 
 	private final ModelRepository modelRepository;
+	private final ModelConverter modelConverter;
+	private final BrandService brandService;
 
 	@Override
 	public Long delete(Long id) {
@@ -22,34 +29,46 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public Model save(Model model) {
-		return modelRepository.save(model);
+	public ModelDto save(@Valid ModelDto model) {
+		Model newModel = new Model();
+		newModel.setName(model.getName());
+		newModel.setBrand(brandService.getByName(model.getBrand()));
+		return modelConverter.convetToModelDto(modelRepository.save(newModel));
 	}
 
 	@Override
-	public Page<Model> getAll(Pageable pageable) {
-		return modelRepository.findAll(pageable);
+	public ModelDto update(@Valid ModelPutDto model) {
+		Model modelToUpdate = modelRepository.findById(model.getId())
+				.orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + model.getId()));
+		modelToUpdate.setName(model.getName());
+		modelToUpdate.setBrand(brandService.getByName(model.getBrand()));
+		return modelConverter.convetToModelDto(modelRepository.save(modelToUpdate));
+
 	}
 
 	@Override
-	public Optional<Model> getById(Long id) {
-		return modelRepository.findById(id);
+	public ModelDto getById(Long id) {
+		return modelConverter.convetToModelDto(
+				modelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Model not found")));
 	}
 
 	@Override
-	public Optional<Model> getByName(String name) {
-		return modelRepository.getByName(name);
+	public Model getByName(String name) {
+		return modelRepository.getByName(name).orElseThrow(() -> new EntityNotFoundException("Model not found"));
 	}
 
 	@Override
-	public Model save(String modelName) {
-		Optional<Model>existingModel = modelRepository.getByName(modelName);
+	public Model save(String modelName, Brand brand) {
+		Optional<Model> existingModel = modelRepository.getByName(modelName);
 		if (!existingModel.isPresent()) {
 			Model model = new Model();
 			model.setName(modelName);
+			model.setBrand(brand);
 			return modelRepository.save(model);
 		} else {
-			return existingModel.get();
+			existingModel.get().setBrand(brand);
+			return modelRepository.save(existingModel.get());
 		}
 	}
+
 }

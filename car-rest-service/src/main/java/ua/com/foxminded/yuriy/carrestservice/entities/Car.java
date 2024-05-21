@@ -43,6 +43,6 @@ public class Car {
 	private Model model;
 
 	@ManyToMany
-	@JoinTable(name = "CarToCategoryReferences", joinColumns = @JoinColumn(name = "car_Id"), inverseJoinColumns = @JoinColumn(name = "category_Id"))
+	@JoinTable(name = "car_category", joinColumns = @JoinColumn(name = "car_Id"), inverseJoinColumns = @JoinColumn(name = "category_Id"))
 	private Set<Category> category;
 }

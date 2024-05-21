@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import ua.com.foxminded.yuriy.carrestservice.entities.Model;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 
 @RestController
@@ -21,27 +22,27 @@ import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 public class ModelController {
 	private final ModelService modelService;
 
-	@PostMapping("/save")
-	public ResponseEntity<Model> saveModel(@RequestBody Model model) {
-		Model createdModel = modelService.save(model);
+	@PostMapping
+	public ResponseEntity<ModelDto> save(@RequestBody @Valid ModelDto model) {
+		ModelDto createdModel = modelService.save(model);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdModel);
 	}
 
-	@PutMapping("/update")
-	public ResponseEntity<Model> update(@RequestBody Model model) {
-		Model updatedModel = modelService.save(model);
+	@PutMapping
+	public ResponseEntity<ModelDto> update(@RequestBody @Valid ModelPutDto model) {
+		ModelDto updatedModel = modelService.update(model);
 		return ResponseEntity.status(HttpStatus.OK).body(updatedModel);
 	}
 
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<Model> delete(@PathVariable(value = "id") Long id) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<ModelDto> delete(@PathVariable(value = "id") Long id) {
 		modelService.delete(id);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Model> get(@PathVariable(value = "id") Long id) {
-		Model model = modelService.getById(id).get();
+	public ResponseEntity<ModelDto> get(@PathVariable(value = "id") Long id) {
+		ModelDto model = modelService.getById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(model);
 	}
 
