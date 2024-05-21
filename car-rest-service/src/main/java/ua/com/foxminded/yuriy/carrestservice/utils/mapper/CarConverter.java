@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.CarDto;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.CarPageDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 
 @Component
 public class CarConverter {
@@ -22,8 +22,8 @@ public class CarConverter {
 		return carDto;
 	}
 	
-	public CarPageDto convertToPage(Page<Car>cars) {
-		CarPageDto carPageDto = new CarPageDto();
+	public CarDtoPage convertToPage(Page<Car>cars) {
+		CarDtoPage carPageDto = new CarDtoPage();
 		carPageDto.setTotalPages(cars.getTotalPages());
 		carPageDto.setTotalElements(cars.getTotalElements());
 		carPageDto.setCars(cars.getContent().stream().map(this::convertToDto).collect(Collectors.toList()));

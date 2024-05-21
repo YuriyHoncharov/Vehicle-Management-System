@@ -1,20 +1,20 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import org.springframework.data.domain.Page;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
-import ua.com.foxminded.yuriy.carrestservice.entities.Category;
-import ua.com.foxminded.yuriy.carrestservice.entities.Model;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.CSVDataDto;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.CarPageDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
+import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CarRepository;
 import ua.com.foxminded.yuriy.carrestservice.repository.specification.SpecificationManager;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
@@ -29,15 +29,12 @@ import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CarConverter;
 public class CarServiceImpl implements CarService {
 
 	private final CarRepository carRepository;
-	private final BrandService brandService;
 	private final ModelService modelService;
+	private final BrandService brandService;
 	private final CategoryService categoryService;
 	private final FilterUtils filterUtils;
 	private final SpecificationManager<Car> specificationManager;
 	private final CarConverter carConverter;
-	
-	
-		
 	private static final String SPLIT_TO_ARRAY = ",";
 
 	@Override
@@ -47,22 +44,24 @@ public class CarServiceImpl implements CarService {
 	}
 
 	@Override
-	public Car save(Car car) {
-		return carRepository.save(car);
+	public CarDto save(@Valid CarPostDto car) {
+		Car newCar = new Car();
+		newCar.setObjectId(car.getObjectId());
+		newCar.setBrand(brandService.getByName(car.getBrand()));
+		newCar.setProductionYear(car.getProductionYear());
+		newCar.setModel(modelService.getByName(car.getModel()));
+		newCar.setCategory(car.getCategories().stream().map(categoryService::getByName).collect(Collectors.toSet()));
+		return carConverter.convertToDto(carRepository.save(newCar));
 	}
 
 	@Override
-	public Page<Car> getAll(Pageable pageable) {
-		return carRepository.findAll(pageable);
+	public CarDto getById(Long id) {
+		return carConverter.convertToDto(
+				carRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Car entity not found")));
 	}
 
 	@Override
-	public Optional<Car> getById(Long id) {
-		return carRepository.findById(id);
-	}
-
-	@Override
-	public CarPageDto getAll(Map<String, String> filters) {
+	public CarDtoPage getAll(Map<String, String> filters) {
 		Pageable pageReqeust = filterUtils.getPageFromFilters(filters);
 		Specification<Car> specification = null;
 		for (Map.Entry<String, String> entry : filters.entrySet()) {
@@ -73,28 +72,14 @@ public class CarServiceImpl implements CarService {
 	}
 
 	@Override
-	public void uploadDataFromCSV(List<CSVDataDto> dataList) {
-		for (CSVDataDto info : dataList) {
-			Car car = new Car();
-			car.setObjectId(info.getObjectId());
-			car.setProductionYear(info.getYear());
-			Model model;
-			Brand brand;
-			Set<Category> categories = null;
-			// Model
-			model = modelService.save(info.getModel());
-			// Brand
-			brand = brandService.save(info.getBrand(), model);
-			// Category
-			for (String cat : info.getCategory()) {
-				Category category = categoryService.save(cat);
-				categories.add(category);
-			}
-			car.setBrand(brand);
-			car.setModel(model);
-			car.setCategory(categories);
-			carRepository.save(car);
-		}
-
+	public CarDto update(@Valid CarPutDto car) {
+		Car newCar = carRepository.findById(car.getId())
+				.orElseThrow(() -> new EntityNotFoundException("Car with following ID was not found : " + car.getId()));
+		newCar.setObjectId(car.getObjectId());
+		newCar.setBrand(brandService.getByName(car.getBrand()));
+		newCar.setProductionYear(car.getProductionYear());
+		newCar.setModel(modelService.getByName(car.getModel()));
+		newCar.setCategory(car.getCategories().stream().map(categoryService::getByName).collect(Collectors.toSet()));
+		return carConverter.convertToDto(carRepository.save(newCar));
 	}
 }

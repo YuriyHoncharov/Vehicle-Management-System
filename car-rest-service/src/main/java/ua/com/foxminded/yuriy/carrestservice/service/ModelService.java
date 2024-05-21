@@ -1,23 +1,22 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
-import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
 
 public interface ModelService {
 
 	Long delete(Long id);
 
-	Model save(Model model);
-
-	Page<Model> getAll(Pageable pageable);
-
-	Optional <Model> getById(Long id);
+	ModelDto save(ModelDto model);
 	
-	Optional <Model> getByName(String name);
-	
-	Model save(String modelName);	
+	ModelDto update (ModelPutDto model);
+
+	ModelDto getById(Long id);
+
+	Model getByName(String name);
+
+	Model save(String modelName, Brand brand);
 
 }

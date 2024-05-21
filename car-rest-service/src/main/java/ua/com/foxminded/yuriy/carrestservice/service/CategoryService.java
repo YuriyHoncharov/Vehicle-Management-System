@@ -1,17 +1,21 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
-import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
 
 public interface CategoryService {
-	
+
 	Long delete(Long id);
-	Category save(Category category);
-	Page<Category> getAll(Pageable pageable);
-	Optional <Category> getById(Long id);
-	Optional <Category> getByName(String name);
-	Category save(String category);
+
+	CategoryDto save(CategoryDto category);
+	
+	CategoryDto update(CategoryPutDto category);
+
+	CategoryDto getById(Long id);
+
+	Category getByName(String name);
+
+	Category save(String name);
 
 }

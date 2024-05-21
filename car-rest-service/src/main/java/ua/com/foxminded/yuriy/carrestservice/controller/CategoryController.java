@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import ua.com.foxminded.yuriy.carrestservice.entities.Category;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 
 @RestController
@@ -20,28 +22,28 @@ import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 public class CategoryController {
 
 	private final CategoryService categoryService;
-	
-	@PostMapping("/save")
-	public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
-		Category createdCategory = categoryService.save(category);
+
+	@PostMapping
+	public ResponseEntity<CategoryDto> save(@RequestBody @Valid CategoryDto category) {
+		CategoryDto createdCategory = categoryService.save(category);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
 	}
 
-	@PutMapping("/update")
-	public ResponseEntity<Category> update(@RequestBody Category category) {
-		Category updatedCategory = categoryService.save(category);
+	@PutMapping
+	public ResponseEntity<CategoryDto> update(@RequestBody @Valid CategoryPutDto category) {
+		CategoryDto updatedCategory = categoryService.update(category);
 		return ResponseEntity.status(HttpStatus.OK).body(updatedCategory);
 	}
 
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<Category> delete(@PathVariable(value = "id") Long id) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<CategoryDto> delete(@PathVariable(value = "id") Long id) {
 		categoryService.delete(id);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Category> get(@PathVariable(value = "id") Long id) {
-		Category category = categoryService.getById(id).get();
+	public ResponseEntity<CategoryDto> get(@PathVariable(value = "id") Long id) {
+		CategoryDto category = categoryService.getById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(category);
 	}
 }
