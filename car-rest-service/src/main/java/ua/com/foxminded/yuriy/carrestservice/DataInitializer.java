@@ -27,5 +27,4 @@ public class DataInitializer implements ApplicationRunner {
 		List<CSVDataDto> data = csvImportService.getAll(file);
 		csvImportService.loadToDataBase(data);
 	}
-
 }
