@@ -1,5 +1,6 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
+import java.util.List;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
@@ -10,13 +11,17 @@ public interface ModelService {
 	Long delete(Long id);
 
 	ModelDto save(ModelDto model);
-	
-	ModelDto update (ModelPutDto model);
 
-	ModelDto getById(Long id);
+	ModelDto update(ModelPutDto model);
+
+	ModelDto getDtoById(Long id);
 
 	Model getByName(String name);
 
 	Model save(String modelName, Brand brand);
+
+	Model getById(Long id);
+	
+	void saveAll(List<Model>models);
 
 }

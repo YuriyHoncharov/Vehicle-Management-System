@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component
 public class ApiKeyAuthExtractor {
 
-	@Value("${api.key}")
+	@Value("${apiKey}")
 	private String apiKey;
 
 	public Optional<Authentication> extract(HttpServletRequest request) {

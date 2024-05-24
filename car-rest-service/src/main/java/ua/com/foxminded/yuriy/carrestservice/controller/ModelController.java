@@ -42,7 +42,7 @@ public class ModelController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<ModelDto> get(@PathVariable(value = "id") Long id) {
-		ModelDto model = modelService.getById(id);
+		ModelDto model = modelService.getDtoById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(model);
 	}
 

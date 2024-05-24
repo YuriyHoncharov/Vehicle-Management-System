@@ -1,12 +1,12 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
@@ -37,6 +37,7 @@ public class CarServiceImpl implements CarService {
 	private final CarConverter carConverter;
 	private static final String SPLIT_TO_ARRAY = ",";
 
+
 	@Override
 	public Long delete(Long id) {
 		carRepository.deleteById(id);
@@ -47,10 +48,10 @@ public class CarServiceImpl implements CarService {
 	public CarDto save(@Valid CarPostDto car) {
 		Car newCar = new Car();
 		newCar.setObjectId(car.getObjectId());
-		newCar.setBrand(brandService.getByName(car.getBrand()));
+		newCar.setBrand(brandService.getById(car.getBrandId()));
 		newCar.setProductionYear(car.getProductionYear());
-		newCar.setModel(modelService.getByName(car.getModel()));
-		newCar.setCategory(car.getCategories().stream().map(categoryService::getByName).collect(Collectors.toSet()));
+		newCar.setModel(modelService.getById(car.getModelId()));
+		newCar.setCategory(car.getCategories().stream().map(categoryService::getById).collect(Collectors.toSet()));
 		return carConverter.convertToDto(carRepository.save(newCar));
 	}
 
@@ -72,14 +73,21 @@ public class CarServiceImpl implements CarService {
 	}
 
 	@Override
+	@Transactional
 	public CarDto update(@Valid CarPutDto car) {
 		Car newCar = carRepository.findById(car.getId())
 				.orElseThrow(() -> new EntityNotFoundException("Car with following ID was not found : " + car.getId()));
 		newCar.setObjectId(car.getObjectId());
-		newCar.setBrand(brandService.getByName(car.getBrand()));
 		newCar.setProductionYear(car.getProductionYear());
-		newCar.setModel(modelService.getByName(car.getModel()));
-		newCar.setCategory(car.getCategories().stream().map(categoryService::getByName).collect(Collectors.toSet()));
+		newCar.setBrand(brandService.getById(car.getBrandId()));
+		newCar.setModel(modelService.getById(car.getModelId()));
+		newCar.setCategory(car.getCategories().stream().map(categoryService::getById).collect(Collectors.toSet()));
 		return carConverter.convertToDto(carRepository.save(newCar));
+	}
+
+	@Override
+	public void saveAll(List<Car> cars) {
+		carRepository.saveAll(cars);
+		
 	}
 }
