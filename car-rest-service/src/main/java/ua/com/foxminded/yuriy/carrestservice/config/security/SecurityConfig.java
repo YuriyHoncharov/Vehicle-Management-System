@@ -25,7 +25,9 @@ public class SecurityConfig {
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.formLogin(AbstractHttpConfigurer::disable)
 				.securityMatcher("/**")
-				.authorizeHttpRequests(registry -> registry.requestMatchers(AntPathRequestMatcher.antMatcher("/public/**")).permitAll()
+				.authorizeHttpRequests(registry -> registry
+						.requestMatchers(AntPathRequestMatcher.antMatcher("/public/**")).permitAll()
+						.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/cars")).permitAll()
 				.anyRequest().authenticated())
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();				

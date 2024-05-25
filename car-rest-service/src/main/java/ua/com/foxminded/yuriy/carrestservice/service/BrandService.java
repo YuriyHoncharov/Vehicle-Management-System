@@ -21,8 +21,8 @@ public interface BrandService {
 	
 	Brand save(String brandName);
 	
-	Brand getById(Long id);	
+	Brand getById(Long id);		
 	
-	void saveAll(List<Brand>brands);
+	List<Brand> saveAll (List<String>brandNames);
 	
 }

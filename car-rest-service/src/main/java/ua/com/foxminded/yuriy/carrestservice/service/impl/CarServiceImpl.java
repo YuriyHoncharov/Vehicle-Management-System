@@ -90,4 +90,9 @@ public class CarServiceImpl implements CarService {
 		carRepository.saveAll(cars);
 		
 	}
+
+	@Override
+	public Car save(Car car) {
+		return carRepository.save(car);
+	}
 }

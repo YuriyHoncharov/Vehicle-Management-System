@@ -7,12 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -20,13 +15,12 @@ import jakarta.transaction.Transactional;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
-import ua.com.foxminded.yuriy.carrestservice.repository.CarRepository;
-import ua.com.foxminded.yuriy.carrestservice.repository.specification.car.CarSpecificationManager;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 @Sql(scripts = { "/schema.sql", "/test-data.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = { "/clear.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@ActiveProfiles("test")
 
 public class CarServiceIT {
 	
@@ -62,8 +56,5 @@ public class CarServiceIT {
 		assertTrue(updatedCar.getModel().equals("3 Series"));		
 		assertTrue(updatedCar.getProductionYear() == 199);		
 		assertTrue(carService.update(car).getClass() == CarDto.class);
-		
-	} 
-	
-
+			} 
 }

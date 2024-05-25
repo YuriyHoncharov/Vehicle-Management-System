@@ -1,8 +1,10 @@
 package ua.com.foxminded.yuriy.carrestservice.entities;
 
 import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,6 +31,10 @@ public class Brand {
 	@Column(nullable = false, unique = true)
 	private String name;
 
-	@OneToMany(mappedBy = "brand")
-	private Set<Model> models;	
+	@OneToMany(mappedBy = "brand", fetch = FetchType.EAGER)
+	private Set<Model> models;
+
+	public Brand(String name) {
+		this.name = name;
+	}
 }

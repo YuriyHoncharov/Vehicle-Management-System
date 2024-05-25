@@ -21,7 +21,7 @@ public interface CategoryService {
 	Category save(String name);
 
 	Category getById(Long id);
-	
-	void saveAll(List<Category>categories);
+
+	List<Category> saveAll(List<String> categoryNames);
 
 }

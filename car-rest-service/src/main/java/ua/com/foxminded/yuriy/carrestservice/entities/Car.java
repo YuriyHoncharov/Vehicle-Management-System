@@ -1,6 +1,8 @@
 package ua.com.foxminded.yuriy.carrestservice.entities;
 
 import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,7 +46,7 @@ public class Car {
 	@JoinColumn(name = "model_Id")
 	private Model model;
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "car_category", joinColumns = @JoinColumn(name = "car_Id"), inverseJoinColumns = @JoinColumn(name = "category_Id"))
 	private Set<Category> category;
 }

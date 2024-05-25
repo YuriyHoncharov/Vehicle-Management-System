@@ -21,6 +21,8 @@ public interface CarService {
 
 	CarDtoPage getAll(Map<String, String> filters);
 	
+	Car save(Car car);
+	
 	void saveAll(List<Car>cars);
 
 }

@@ -1,6 +1,8 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
 import java.util.List;
+import java.util.Map;
+
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
@@ -22,6 +24,6 @@ public interface ModelService {
 
 	Model getById(Long id);
 	
-	void saveAll(List<Model>models);
+	List<Model>saveAll(Map<String, String> modelBrandMap, Map<String, Brand> brandMap);
 
 }

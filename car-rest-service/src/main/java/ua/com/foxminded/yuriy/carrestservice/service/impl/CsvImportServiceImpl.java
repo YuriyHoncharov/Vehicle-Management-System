@@ -1,8 +1,13 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
@@ -25,45 +30,55 @@ public class CsvImportServiceImpl implements CsvImportService {
 	private final BrandService brandService;
 	private final CarService carService;
 
-	@Override
 	public void loadToDataBase(List<CsvFileData> dataList) {
 
-		Set<Car> allCars = new HashSet<>();
-		Set<Model> allModels = new HashSet<>();
-		Set<Brand> allBrands = new HashSet<>();
-		Set<Category> allCategories = new HashSet<>();
+		Set<String> brandNames = new HashSet<>();
+		Set<String> categoryNames = new HashSet<>();
+		Map<String, String> modelBrandMap = new HashMap<>();
+		List<Car> cars = new ArrayList<>();
 
-		for (CsvFileData info : dataList) {
+		for (CsvFileData data : dataList) {
+			brandNames.add(data.getBrand());
+			categoryNames.addAll(data.getCategory());
+			modelBrandMap.put(data.getModel(), data.getBrand());
 
-			Brand brand = new Brand();
-			brand.setName(info.getBrand());
-			allBrands.add(brand);
-			Model model = new Model();
-			model.setName(info.getModel());
-			model.setBrand(brand);
-			allModels.add(model);
-
-			Set<Category> categories = new HashSet<>();
-			for (String cat : info.getCategory()) {
-				Category category = new Category();
-				category.setName(cat);
-				allCategories.add(category);
-
-				categories.add(category);
-
-				Car car = new Car();
-				car.setObjectId(info.getObjectId());
-				car.setProductionYear(info.getYear());
-				car.setBrand(brand);
-				car.setModel(model);
-				car.setCategory(categories);
-				allCars.add(car);
-				categories.clear();
-			}
+			Car car = new Car();
+			car.setObjectId(data.getObjectId());
+			car.setBrand(new Brand(data.getBrand()));
+			car.setModel(new Model(data.getModel()));
+			car.setProductionYear(data.getYear());
+			cars.add(car);
 		}
-		categoryService.saveAll(allCategories.stream().toList());
-		brandService.saveAll(allBrands.stream().toList());
-		modelService.saveAll(allModels.stream().toList());
-		carService.saveAll(allCars.stream().toList());
+
+		List<Brand> brands = brandService.saveAll(new ArrayList<>(brandNames));
+		Map<String, Brand> brandMap = brands.stream().collect(Collectors.toMap(Brand::getName, Function.identity()));
+
+		List<Model> models = modelService.saveAll(modelBrandMap, brandMap);
+		Map<String, Model> modelMap = models.stream().collect(Collectors.toMap(Model::getName, Function.identity()));
+
+		List<Category> categories = categoryService.saveAll(new ArrayList<>(categoryNames));
+		Map<String, Category> categoryMap = categories.stream()
+				.collect(Collectors.toMap(Category::getName, Function.identity()));
+
+		for (Car car : cars) {
+
+			String brandName = dataList.stream().filter(data -> data.getObjectId().equals(car.getObjectId()))
+					.map(CsvFileData::getBrand).findFirst().orElse(null);
+
+			String modelName = dataList.stream().filter(data -> data.getObjectId().equals(car.getObjectId()))
+					.map(CsvFileData::getModel).findFirst().orElse(null);
+
+			car.setBrand(brandMap.get(brandName));
+			car.setModel(modelMap.get(modelName));
+
+			Set<Category> carCategories = new HashSet<>();
+			for (String categoryName : dataList.stream().filter(data -> data.getObjectId().equals(car.getObjectId()))
+					.flatMap(data -> data.getCategory().stream()).collect(Collectors.toSet())) {
+				carCategories.add(categoryMap.get(categoryNames));
+			}
+			car.setCategory(carCategories);
+		}
+		carService.saveAll(cars);
 	}
+
 }

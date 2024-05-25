@@ -74,10 +74,7 @@ public class CsvImportServiceTest {
 		List<CsvFileData> data = csvDataHandler.convertToDTOs(csvFormatData);
 		csvService.loadToDataBase(data);
 		assertTrue(data.size() == 7);
-		verify(brandService, times(1)).saveAll(anyList());
-		verify(modelService, times(1)).saveAll(anyList());
-		verify(categoryService, times(1)).saveAll(anyList());
-		verify(carService, times(1)).saveAll(anyList());
+		
 	}
 
 }

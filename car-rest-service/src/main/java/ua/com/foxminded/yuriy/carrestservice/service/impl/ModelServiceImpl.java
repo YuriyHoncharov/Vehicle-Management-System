@@ -1,12 +1,13 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
-import ua.com.foxminded.yuriy.carrestservice.entities.Category;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
@@ -83,8 +84,13 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public void saveAll(List<Model> models) {
-		modelRepository.saveAll(models);
+	public List<Model> saveAll(Map<String, String> modelBrandMap, Map<String, Brand> brandMap) {
+		List<Model> models = modelBrandMap.entrySet().stream().map(entry -> {
+			String modelName = entry.getKey();
+			String brandName = entry.getValue();
+			Brand brand = brandMap.get(brandName);
+			return modelRepository.getByName(modelName).orElse(new Model(modelName, brand));
+		}).collect(Collectors.toList());
+		return modelRepository.saveAll(models);
 	}
-
 }

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
@@ -25,12 +26,12 @@ import ua.com.foxminded.yuriy.carrestservice.repository.specification.car.CarYea
 @TestPropertySource(locations = "classpath:application-test.properties")
 @Sql(scripts = { "/schema.sql", "/test-data.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = { "/clear.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@ActiveProfiles("test")
 public class CarRepositoryIT {
 
 	@Autowired
 	private CarRepository carRepository;
-	@Autowired
-
+	
 	private static final String YEAR_2017 = "2017";
 	private static final String YEAR_2020 = "2020";
 	private static final String INCORRECT_YEAR = "2200";
@@ -115,21 +116,21 @@ public class CarRepositoryIT {
 		assertTrue(car.getBrand().getName().equals(HONDA_BRAND));
 		assertTrue(car.getModel().getName().equals(HONDA_MODEL));
 	}
-	
+
 	@Test
 	public void getAllCar_shouldReturnCorrectCarsBetweenTwoYearsProductionFilters() {
 		CarYearOfProductionSpecification carYearSpecification = new CarYearOfProductionSpecification();
-		Specification<Car>specification = carYearSpecification.getSpecification(new String[] {YEAR_2017, YEAR_2020});
-		Page<Car>page = carRepository.findAll(specification, PageRequest.of(0, 10));
+		Specification<Car> specification = carYearSpecification.getSpecification(new String[] { YEAR_2017, YEAR_2020 });
+		Page<Car> page = carRepository.findAll(specification, PageRequest.of(0, 10));
 		assertEquals(page.getContent().size(), 4);
 	}
-	
+
 	@Test
 	public void getAllCar_incorrectFilterName_shouldReturnEmptyPage() {
 		CarModelSpecification spec = new CarModelSpecification();
 		Specification<Car> carSpec = spec.getSpecification(new String[] { "taktak", "dada" });
-		Page<Car>carPage = carRepository.findAll(carSpec, PageRequest.of(0, 10));
+		Page<Car> carPage = carRepository.findAll(carSpec, PageRequest.of(0, 10));
 		assertTrue(carPage.getContent().size() == 0);
 	}
-	
+
 }

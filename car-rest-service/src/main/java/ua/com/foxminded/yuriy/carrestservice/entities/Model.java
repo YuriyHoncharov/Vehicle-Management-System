@@ -21,16 +21,25 @@ import lombok.NoArgsConstructor;
 @Table
 
 public class Model {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "name")
 	private String name;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "brand_Id")
 	private Brand brand;
-	
+
+	public Model(String name, Brand brand) {
+		this.name = name;
+		this.brand = brand;
+	}
+
+	public Model(String name) {
+		this.name = name;
+	}
+
 }
