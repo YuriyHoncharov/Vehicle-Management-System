@@ -25,7 +25,7 @@ public class DataGenerator {
 	private FilesReader filesReader;
 	@Autowired
 	private CsvDataHandler csvDataHandler;	
-	
+
 
 	@Value("${dataFile}")
 	private String dataFilePath;
@@ -37,5 +37,6 @@ public class DataGenerator {
 		List<String[]> dataFromCsv = filesReader.readCSVRecords(file);
 		List<CsvFileData> data = csvDataHandler.convertToDTOs(dataFromCsv);
 		csvImportService.loadToDataBase(data);
+		
 	}
 }

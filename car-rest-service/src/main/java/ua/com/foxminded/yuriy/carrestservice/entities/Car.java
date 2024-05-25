@@ -46,7 +46,7 @@ public class Car {
 	@JoinColumn(name = "model_Id")
 	private Model model;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany
 	@JoinTable(name = "car_category", joinColumns = @JoinColumn(name = "car_Id"), inverseJoinColumns = @JoinColumn(name = "category_Id"))
 	private Set<Category> category;
 }

@@ -74,7 +74,7 @@ public class CsvImportServiceImpl implements CsvImportService {
 			Set<Category> carCategories = new HashSet<>();
 			for (String categoryName : dataList.stream().filter(data -> data.getObjectId().equals(car.getObjectId()))
 					.flatMap(data -> data.getCategory().stream()).collect(Collectors.toSet())) {
-				carCategories.add(categoryMap.get(categoryNames));
+				carCategories.add(categoryMap.get(categoryName));
 			}
 			car.setCategory(carCategories);
 		}
