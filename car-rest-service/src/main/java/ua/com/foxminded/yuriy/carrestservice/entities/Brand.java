@@ -2,6 +2,7 @@ package ua.com.foxminded.yuriy.carrestservice.entities;
 
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,7 +32,7 @@ public class Brand {
 	@Column(nullable = false, unique = true)
 	private String name;
 
-	@OneToMany(mappedBy = "brand", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "brand",cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.LAZY)
 	private Set<Model> models;
 
 	public Brand(String name) {
