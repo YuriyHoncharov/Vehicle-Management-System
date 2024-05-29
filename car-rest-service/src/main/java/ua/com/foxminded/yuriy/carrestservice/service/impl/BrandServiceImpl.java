@@ -1,10 +1,10 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
@@ -12,6 +12,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPutDto;
+import ua.com.foxminded.yuriy.carrestservice.exception.EntityAlreadyExistException;
 import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.BrandRepository;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
@@ -32,10 +33,14 @@ public class BrandServiceImpl implements BrandService {
 		return id;
 	}
 
+	@Transactional
 	@Override
 	public BrandDto getDtoById(Long id) {
-		return brandConverter.convertToDto(brandRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Entity with following ID not found : " + id.toString())));
+		Brand brand = brandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity with following ID not found : " + id.toString()));
+		Hibernate.initialize(brand.getModels());
+		BrandDto brandDto = brandConverter.convertToDto(brand);		
+		
+		return brandDto;
 	}
 
 	@Override
@@ -45,52 +50,54 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	@Override
-	public Brand save(String brandName) {
-
-		Optional<Brand> existingBrand = brandRepository.getByName(brandName);
-		Brand brand = new Brand();
-
-		if (!existingBrand.isPresent()) {
-			brand = new Brand();
-			brand.setName(brandName);
-
-		} else {
-
-			brand = existingBrand.get();
-		}
-		return brandRepository.save(brand);
-
-	}
-
-	@Override
+	@Transactional
 	public BrandDto save(@Valid BrandPostDto brand) {
-		Brand newBrand = new Brand();
-		brand.setName(brand.getName());
-		return brandConverter.convertToDto(brandRepository.save(newBrand));
+		if (checkIfBrandExists(brand.getName())) {
+			throw new EntityAlreadyExistException("Brand with following name already exists : " + brand.getName());
+		} else {
+			Brand newBrand = new Brand();
+			newBrand.setName(brand.getName());
+			return brandConverter.convertToDto(brandRepository.save(newBrand));
+		}
 	}
 
 	@Override
+	@Transactional
 	public BrandDto update(@Valid BrandPutDto brand) {
-		Brand brandToUpdate = brandRepository.findById(brand.getId())
-				.orElseThrow(() -> new EntityNotFoundException("Brand with following ID was not found : " + brand.getId()));
+		if (checkIfBrandExists(brand.getName())) {
+			throw new EntityAlreadyExistException("Brand with following name already exists : " + brand.getName());
+		} else {
+			Brand brandToUpdate = getById(brand.getId());
+			Set<Model> models = brand.getModels().stream()
+					.map(modelId -> modelRepository.findById(modelId).orElseThrow(
+							() -> new EntityNotFoundException("Model with following ID was not found : " + modelId)))
+					.collect(Collectors.toSet());
+			brandToUpdate.setModels(models);
+			return brandConverter.convertToDto(brandRepository.save(brandToUpdate));
+		}
+	}
 
-		Set<Model> models = brand.getModels().stream()
-				.map(modelId -> modelRepository.findById(modelId)
-						.orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + modelId)))
-				.collect(Collectors.toSet());
-		brandToUpdate.setModels(models);
-		Brand updatedBrand = brandRepository.save(brandToUpdate);
-		return brandConverter.convertToDto(updatedBrand);
+	private boolean checkIfBrandExists(String name) {
+		try {
+			Brand existingBrand = getByName(name);
+			return existingBrand != null;
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
 	}
 
 	@Override
+	@Transactional
 	public Brand getById(Long id) {
-		return brandRepository.findById(id)
+		Brand brand = brandRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Entity with following ID not found : " + id.toString()));
+		Hibernate.initialize(brand.getModels());
+		return brand;
 	}
 
 	@Override
+	@Transactional
 	public Set<Brand> saveAll(Set<Brand> brands) {
-			return (brandRepository.saveAll(brands)).stream().collect(Collectors.toSet());
+		return (brandRepository.saveAll(brands)).stream().collect(Collectors.toSet());
 	}
 }

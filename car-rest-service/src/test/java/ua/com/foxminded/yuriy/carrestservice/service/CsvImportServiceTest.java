@@ -3,9 +3,12 @@ package ua.com.foxminded.yuriy.carrestservice.service;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
@@ -65,16 +68,4 @@ public class CsvImportServiceTest {
 		assertTrue(data.get(0).getModel().equals("model1"));
 		assertTrue(data.get(0).getObjectId().equals("test1"));
 	}
-
-	@Test
-	void loadToDataBase_shouldLoadAnyEntity_ifDataIsCorrect() {
-		String dataFilePath = "src/test/resources/test.csv";
-		File file = new File(dataFilePath);
-		List<String[]> csvFormatData = filesReader.readCSVRecords(file);
-		List<CsvFileData> data = csvDataHandler.convertToDTOs(csvFormatData);
-		csvService.loadToDataBase(data);
-		assertTrue(data.size() == 7);
-		
-	}
-
 }

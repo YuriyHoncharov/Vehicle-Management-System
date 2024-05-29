@@ -1,6 +1,5 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +7,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
@@ -28,7 +28,8 @@ public class CsvImportServiceImpl implements CsvImportService {
 	private final CategoryService categoryService;
 	private final BrandService brandService;
 	private final CarService carService;
-
+	
+	@Transactional
 	public void loadToDataBase(List<CsvFileData> dataList) {
 
 		Set<Brand> brands = new HashSet<>();
@@ -50,18 +51,15 @@ public class CsvImportServiceImpl implements CsvImportService {
 			car.setProductionYear(row.getYear());
 			cars.add(car);
 		}
-		brands = new HashSet<>(brandService.saveAll(brands));
-		Map<String, Brand> savedBrands = brands.stream().collect(Collectors.toMap(Brand::getName, Function.identity()));
+
+		Map<String, Brand> savedBrands = getSavedBrands(brands);
 		models = models.stream().map(model -> {
 			model.setBrand(savedBrands.get(model.getBrand().getName()));
 			return model;
 		}).collect(Collectors.toSet());
-		models = new HashSet<>(modelService.saveAll(models));
-		Map<String, Model> savedModels = models.stream().collect(
-				Collectors.toMap(model -> model.getBrand().getName() + "-" + model.getName(), Function.identity()));
-		categories = new HashSet<>(categoryService.saveAll(categories));
-		Map<String, Category> savedCategories = categories.stream()
-				.collect(Collectors.toMap(Category::getName, Function.identity()));
+		Map<String, Model> savedModels = getSavedModels(models);
+		Map<String, Category> savedCategories = getSavedCategories(categories);
+
 		cars = cars.stream().map(car -> {
 			car.setBrand(savedBrands.get(car.getBrand().getName()));
 			car.setModel(savedModels.get(car.getBrand().getName() + "-" + car.getModel().getName()));
@@ -71,5 +69,21 @@ public class CsvImportServiceImpl implements CsvImportService {
 			return car;
 		}).collect(Collectors.toSet());
 		carService.saveAll(cars);
+	}
+
+	private Map<String, Brand> getSavedBrands(Set<Brand> brands) {
+		brands = new HashSet<>(brandService.saveAll(brands));
+		return brands.stream().collect(Collectors.toMap(Brand::getName, Function.identity()));
+	}
+
+	private Map<String, Model> getSavedModels(Set<Model> models) {
+		models = new HashSet<>(modelService.saveAll(models));
+		return models.stream().collect(
+				Collectors.toMap(model -> model.getBrand().getName() + "-" + model.getName(), Function.identity()));
+	}
+
+	private Map<String, Category> getSavedCategories(Set<Category> categories) {
+		categories = new HashSet<>(categoryService.saveAll(categories));
+		return categories.stream().collect(Collectors.toMap(Category::getName, Function.identity()));
 	}
 }

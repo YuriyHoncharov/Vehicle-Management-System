@@ -26,21 +26,26 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
 		return new ResponseEntity<>(apiError, apiError.getStatus());
 	}
-	
-	 @ExceptionHandler({EntityNotFoundException.class})
-	   protected ResponseEntity<Object> handleEntityNotFound(
-	           EntityNotFoundException ex) {
-	       ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
-	       apiError.setMessage(ex.getMessage());
-	       return buildResponseEntity(apiError);
-	   }
-	 
-	 @ExceptionHandler({FilterIllegalArgumentException.class})
-	   protected ResponseEntity<Object> handleFilterIllegalArgumentException(
-	   		FilterIllegalArgumentException ex) {
-	       ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
-	       apiError.setMessage(ex.getMessage());
-	       return buildResponseEntity(apiError);
-	   }
+
+	@ExceptionHandler({ EntityNotFoundException.class })
+	protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
+		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
+		apiError.setMessage(ex.getMessage());
+		return buildResponseEntity(apiError);
+	}
+
+	@ExceptionHandler({ FilterIllegalArgumentException.class })
+	protected ResponseEntity<Object> handleFilterIllegalArgumentException(FilterIllegalArgumentException ex) {
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+		apiError.setMessage(ex.getMessage());
+		return buildResponseEntity(apiError);
+	}
+
+	@ExceptionHandler({ EntityAlreadyExistException.class })
+	protected ResponseEntity<Object> handleEntityAlreadyExists(EntityAlreadyExistException ex) {
+		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
+		apiError.setMessage(ex.getMessage());
+		return buildResponseEntity(apiError);
+	}
 
 }

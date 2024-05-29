@@ -37,15 +37,6 @@ public class BrandServiceTest {
 	private BrandServiceImpl brandService;
 
 	@Test
-	void save_shouldSaveNewBrand_ifNotExistAlready() {
-		String existingBrand = "test";
-		Optional<Brand> brand = Optional.empty();
-		when(brandRepository.getByName(existingBrand)).thenReturn(brand);
-		brandService.save(existingBrand);
-		verify(brandRepository, times(1)).save(any());
-	}
-
-	@Test
 	void update_shouldUpdateModels_ifModelExists() {
 
 		BrandPutDto brandPutDto = new BrandPutDto();

@@ -1,6 +1,5 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,6 +14,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
+import ua.com.foxminded.yuriy.carrestservice.exception.EntityAlreadyExistException;
 import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CarRepository;
 import ua.com.foxminded.yuriy.carrestservice.repository.specification.SpecificationManager;
@@ -45,7 +45,11 @@ public class CarServiceImpl implements CarService {
 	}
 
 	@Override
+	@Transactional
 	public CarDto save(@Valid CarPostDto car) {
+		if (checkIfCarExists(car.getObjectId())) {
+			throw new EntityAlreadyExistException("Car with following Object ID is already exists : " + car.getObjectId());
+		}
 		Car newCar = new Car();
 		newCar.setObjectId(car.getObjectId());
 		newCar.setBrand(brandService.getById(car.getBrandId()));
@@ -62,6 +66,7 @@ public class CarServiceImpl implements CarService {
 	}
 
 	@Override
+	@Transactional
 	public CarDtoPage getAll(Map<String, String> filters) {
 		Pageable pageReqeust = filterUtils.getPageFromFilters(filters);
 		Specification<Car> specification = null;
@@ -75,6 +80,7 @@ public class CarServiceImpl implements CarService {
 	@Override
 	@Transactional
 	public CarDto update(@Valid CarPutDto car) {
+
 		Car newCar = carRepository.findById(car.getId())
 				.orElseThrow(() -> new EntityNotFoundException("Car with following ID was not found : " + car.getId()));
 		newCar.setObjectId(car.getObjectId());
@@ -85,14 +91,23 @@ public class CarServiceImpl implements CarService {
 		return carConverter.convertToDto(carRepository.save(newCar));
 	}
 
-	@Override
-	public void saveAll(Set<Car> cars) {
-		carRepository.saveAll(cars);
-
+	private boolean checkIfCarExists(String objectId) {
+		try {
+			Car existingCar = getByObjectId(objectId);
+			return existingCar != null;
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
 	}
 
 	@Override
-	public Car save(Car car) {
-		return carRepository.save(car);
+	@Transactional
+	public void saveAll(Set<Car> cars) {
+		carRepository.saveAll(cars);
+	}
+
+	@Override
+	public Car getByObjectId(String objectId) {
+		return carRepository.findByObjectId(objectId);
 	}
 }

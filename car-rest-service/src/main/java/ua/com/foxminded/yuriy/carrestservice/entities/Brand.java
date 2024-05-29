@@ -30,15 +30,11 @@ public class Brand {
 	@Column(nullable = false, unique = true)
 	private String name;
 
-	@OneToMany(mappedBy = "brand",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true ,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "brand", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+			CascadeType.REFRESH }, orphanRemoval = true)
 	private Set<Model> models;
 
 	public Brand(String name) {
 		this.name = name;
 	}
-	
-	public void addModel(Model model) {
-		models.add(model);
-	}
-	
 }

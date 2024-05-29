@@ -47,7 +47,7 @@ public class Car {
 	@JoinColumn(name = "model_Id")
 	private Model model;
 
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinTable(name = "car_category", joinColumns = @JoinColumn(name = "car_Id"), inverseJoinColumns = @JoinColumn(name = "category_Id"))
 	private Set<Category> category;
 }

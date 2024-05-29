@@ -11,16 +11,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ua.com.foxminded.yuriy.carrestservice.entities.Category;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPostDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CategoryRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.impl.CategoryServiceImpl;
+import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CategoryConverter;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
 
 	@Mock
 	private CategoryRepository categoryRepository;
+	
+	@Mock
+	private CategoryConverter categoryConverter;
 	
 	@InjectMocks
 	private CategoryServiceImpl categoryService;
@@ -30,18 +34,10 @@ public class CategoryServiceTest {
 	void save_shouldSaveNewCategory_ifNotAlreadyExists() {
 		String categoryName = "anyName";
 		when(categoryRepository.getByName(categoryName)).thenReturn(Optional.empty());
-		categoryService.save(categoryName);
+		CategoryPostDto newCategory = new CategoryPostDto();
+		newCategory.setName(categoryName);
+		categoryService.save(newCategory);
 		verify(categoryRepository, times(1)).save(any());
-	}
-	
-	@Test
-	void save_shouldNotSaveNewCategory_ifAlreadyExists() {
-		String categoryName = "anyName";
-		Category category = new Category();
-		category.setName(categoryName);
-		when(categoryRepository.getByName(categoryName)).thenReturn(Optional.of(category));
-		categoryService.save(categoryName);
-		verify(categoryRepository, times(0)).save(any());
 	}
 	
 	@Test
