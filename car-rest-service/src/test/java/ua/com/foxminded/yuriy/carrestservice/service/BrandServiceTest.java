@@ -1,4 +1,4 @@
-package ua.com.foxminded.yuriy.carrestservice.serviceTests;
+package ua.com.foxminded.yuriy.carrestservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,15 +52,15 @@ public class BrandServiceTest {
 		Long brandId = 1L;
 		brandPutDto.setId(brandId);
 
-		Set<String> model = new HashSet<>();
-		model.add("model");
+		Set<Long> model = new HashSet<>();
+		model.add(1L);
 		brandPutDto.setModels(model);
 
 		Brand brandToUpdate = new Brand();
 		Model modelToUpdate = new Model();
 		when(brandRepository.findById(brandId)).thenReturn(Optional.of(brandToUpdate));
-		String newModel = "model";
-		when(modelRepository.getByName(newModel)).thenReturn(Optional.of(modelToUpdate));
+		Long newModel = 1L;
+		when(modelRepository.findById(newModel)).thenReturn(Optional.of(modelToUpdate));
 
 		brandService.update(brandPutDto);
 

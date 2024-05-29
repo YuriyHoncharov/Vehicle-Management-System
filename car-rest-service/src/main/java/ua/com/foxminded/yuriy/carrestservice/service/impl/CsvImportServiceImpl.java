@@ -1,31 +1,24 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.CSVDataDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.FileReadingException;
-import ua.com.foxminded.yuriy.carrestservice.exception.ValidationException;
-import ua.com.foxminded.yuriy.carrestservice.repository.CarRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
+import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 import ua.com.foxminded.yuriy.carrestservice.service.CsvImportService;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
+import ua.com.foxminded.yuriy.carrestservice.utils.CsvFileData;
 
 @Service
 @RequiredArgsConstructor
@@ -34,71 +27,49 @@ public class CsvImportServiceImpl implements CsvImportService {
 	private final ModelService modelService;
 	private final CategoryService categoryService;
 	private final BrandService brandService;
-	private final CarRepository carRepository;
+	private final CarService carService;
 
-	@Override
-	public List<CSVDataDto> getAll(File file) {
-		List<String[]> records = readCSVRecords(file);
-		List<CSVDataDto> data = convertToDTOs(records);
-		return data;
-	}
+	public void loadToDataBase(List<CsvFileData> dataList) {
 
-	private List<String[]> readCSVRecords(File file) {
-		List<String[]> records = new ArrayList<>();
-		CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
-
-		try (CSVReader csvReader = new CSVReaderBuilder(new FileReader(file)).withCSVParser(parser).build()) {
-			String[] values;
-			while ((values = csvReader.readNext()) != null) {
-				records.add(values);
-			}
-			records.remove(0);
-		} catch (IOException e) {
-			throw new FileReadingException("Error during file reading");
-		} catch (CsvValidationException e) {
-			throw new ValidationException("File format is incorrect : " + e);
-		}
-		return records;
-	}
-
-	private List<CSVDataDto> convertToDTOs(List<String[]> records) {
-		List<CSVDataDto> data = new ArrayList<>();
-		for (String[] strings : records) {
-			String objectId = strings[0].trim();
-			String brand = strings[1].trim();
-			int year = Integer.parseInt(strings[2].trim());
-			String model = strings[3].trim();
-			String[] categories = strings[4].split(",");
-
-			Set<String> categoryList = new HashSet<>();
-			for (String cat : categories) {
-				categoryList.add(cat.trim());
-			}
-			data.add(new CSVDataDto(objectId, brand, year, model, categoryList));
-		}
-		return data;
-	}
-
-	@Override
-	public void loadToDataBase(List<CSVDataDto> dataList) {
-		for (CSVDataDto info : dataList) {
+		Set<Brand> brands = new HashSet<>();
+		Set<Model> models = new HashSet<>();
+		Set<Category> categories = new HashSet<>();
+		Set<Car> cars = new HashSet<>();
+		for (CsvFileData row : dataList) {
+			Brand brand = new Brand(row.getBrand());
+			brands.add(brand);
+			Model model = new Model(row.getModel(), brand);
+			models.add(model);
+			Set<Category> carCategories = row.getCategory().stream().map(Category::new).collect(Collectors.toSet());
+			categories.addAll(carCategories);
 			Car car = new Car();
-			car.setObjectId(info.getObjectId());
-			car.setProductionYear(info.getYear());
-			Model model;
-			Brand brand;
-			Set<Category> categories = new HashSet<>();
-			brand = brandService.save(info.getBrand());
-			model = modelService.save(info.getModel(), brand);
-
-			for (String cat : info.getCategory()) {
-				Category category = categoryService.save(cat);
-				categories.add(category);
-			}
 			car.setBrand(brand);
+			car.setCategory(carCategories);
 			car.setModel(model);
-			car.setCategory(categories);
-			carRepository.save(car);
+			car.setObjectId(row.getObjectId());
+			car.setProductionYear(row.getYear());
+			cars.add(car);
 		}
+		brands = new HashSet<>(brandService.saveAll(brands));
+		Map<String, Brand> savedBrands = brands.stream().collect(Collectors.toMap(Brand::getName, Function.identity()));
+		models = models.stream().map(model -> {
+			model.setBrand(savedBrands.get(model.getBrand().getName()));
+			return model;
+		}).collect(Collectors.toSet());
+		models = new HashSet<>(modelService.saveAll(models));
+		Map<String, Model> savedModels = models.stream().collect(
+				Collectors.toMap(model -> model.getBrand().getName() + "-" + model.getName(), Function.identity()));
+		categories = new HashSet<>(categoryService.saveAll(categories));
+		Map<String, Category> savedCategories = categories.stream()
+				.collect(Collectors.toMap(Category::getName, Function.identity()));
+		cars = cars.stream().map(car -> {
+			car.setBrand(savedBrands.get(car.getBrand().getName()));
+			car.setModel(savedModels.get(car.getBrand().getName() + "-" + car.getModel().getName()));
+			Set<Category> updatedCategories = car.getCategory().stream()
+					.map(category -> savedCategories.get(category.getName())).collect(Collectors.toSet());
+			car.setCategory(updatedCategories);
+			return car;
+		}).collect(Collectors.toSet());
+		carService.saveAll(cars);
 	}
 }

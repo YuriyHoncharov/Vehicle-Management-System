@@ -12,12 +12,12 @@ public class CarPostDto {
 	@NotNull
 	private String objectId;
 	@NotNull
-	private String brand;
+	private Long brandId;
 	@NotNull
 	private int productionYear;
 	@NotNull
-	private String model;
+	private Long modelId;
 	@NotEmpty
-	private Set<String> categories;
+	private Set<Long> categories;
 
 }

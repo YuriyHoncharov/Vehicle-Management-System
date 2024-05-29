@@ -8,4 +8,5 @@ import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 
 public interface CarRepository extends JpaRepository<Car, Long> , JpaSpecificationExecutor<Car>{
 	Page<Car> findAll(Pageable pageable);
+	
 }

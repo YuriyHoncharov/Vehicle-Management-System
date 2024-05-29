@@ -1,6 +1,10 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
@@ -17,5 +21,9 @@ public interface CarService {
 	CarDto getById(Long id);
 
 	CarDtoPage getAll(Map<String, String> filters);
+	
+	Car save(Car car);
+	
+	void saveAll(Set<Car>cars);
 
 }

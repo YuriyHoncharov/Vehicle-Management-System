@@ -1,6 +1,10 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +13,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.repository.BrandRepository;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
@@ -21,6 +26,7 @@ public class ModelServiceImpl implements ModelService {
 	private final ModelRepository modelRepository;
 	private final ModelConverter modelConverter;
 	private final BrandService brandService;
+	private final BrandRepository brandRepository;
 
 	@Override
 	public Long delete(Long id) {
@@ -41,13 +47,14 @@ public class ModelServiceImpl implements ModelService {
 		Model modelToUpdate = modelRepository.findById(model.getId())
 				.orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + model.getId()));
 		modelToUpdate.setName(model.getName());
-		modelToUpdate.setBrand(brandService.getByName(model.getBrand()));
+		modelToUpdate.setBrand(brandRepository.findById(model.getBrandId()).orElseThrow(
+				() -> new EntityNotFoundException("Brand with following ID not exists : " + model.getBrandId())));
 		return modelConverter.convetToModelDto(modelRepository.save(modelToUpdate));
 
 	}
 
 	@Override
-	public ModelDto getById(Long id) {
+	public ModelDto getDtoById(Long id) {
 		return modelConverter.convetToModelDto(
 				modelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Model not found")));
 	}
@@ -70,5 +77,18 @@ public class ModelServiceImpl implements ModelService {
 			return modelRepository.save(existingModel.get());
 		}
 	}
+
+	@Override
+	public Model getById(Long id) {
+		return modelRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + id.toString()));
+	}
+
+	@Override
+	public Set<Model> saveAll(Set<Model> models) {
+		return (modelRepository.saveAll(models)).stream().collect(Collectors.toSet());
+		
+	}
+
 
 }

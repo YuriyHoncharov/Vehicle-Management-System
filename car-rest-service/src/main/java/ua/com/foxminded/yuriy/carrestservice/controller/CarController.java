@@ -12,14 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.FilterIllegalArgumentException;
 import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 
 @RestController
@@ -54,8 +52,9 @@ public class CarController {
 	}
 
 	@GetMapping
-	public CarDtoPage getAllCars(@RequestParam(required = false) Map<String, String> filters) {
-		return carService.getAll(filters);
+	public ResponseEntity<CarDtoPage> getAllCars(@RequestParam(required = false) Map<String, String> filters) {
+		CarDtoPage carDtoPage = carService.getAll(filters);
+		return ResponseEntity.status(HttpStatus.OK).body(carDtoPage);
 
 	}
 
