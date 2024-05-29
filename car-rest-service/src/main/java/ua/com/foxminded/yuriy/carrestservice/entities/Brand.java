@@ -1,7 +1,6 @@
 package ua.com.foxminded.yuriy.carrestservice.entities;
 
 import java.util.Set;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,8 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@Table(name = "Brand")
-
+@Table
 public class Brand {
 
 	@Id
@@ -32,10 +30,15 @@ public class Brand {
 	@Column(nullable = false, unique = true)
 	private String name;
 
-	@OneToMany(mappedBy = "brand",cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "brand",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true ,fetch = FetchType.LAZY)
 	private Set<Model> models;
 
 	public Brand(String name) {
 		this.name = name;
 	}
+	
+	public void addModel(Model model) {
+		models.add(model);
+	}
+	
 }

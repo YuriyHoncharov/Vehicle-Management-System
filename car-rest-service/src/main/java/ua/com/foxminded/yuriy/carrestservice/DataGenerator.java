@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.service.CsvImportService;
@@ -26,12 +25,10 @@ public class DataGenerator {
 	@Autowired
 	private CsvDataHandler csvDataHandler;	
 
-
 	@Value("${dataFile}")
 	private String dataFilePath;
 	
 	@PostConstruct
-	@Transactional
 	public void generateData() {		
 		File file = new File(dataFilePath);
 		List<String[]> dataFromCsv = filesReader.readCSVRecords(file);

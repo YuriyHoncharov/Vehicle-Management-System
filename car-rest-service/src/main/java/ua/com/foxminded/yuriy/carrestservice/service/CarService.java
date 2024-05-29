@@ -2,6 +2,7 @@ package ua.com.foxminded.yuriy.carrestservice.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
@@ -23,6 +24,6 @@ public interface CarService {
 	
 	Car save(Car car);
 	
-	void saveAll(List<Car>cars);
+	void saveAll(Set<Car>cars);
 
 }

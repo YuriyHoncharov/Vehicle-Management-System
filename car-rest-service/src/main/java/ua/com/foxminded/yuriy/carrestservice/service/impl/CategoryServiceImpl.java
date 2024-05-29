@@ -2,6 +2,7 @@ package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -74,10 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<Category> saveAll(List<String> categoryNames) {
-		List<Category> categories = categoryNames.stream()
-				.map(name -> categoryRepository.getByName(name).orElse(new Category(name))).collect(Collectors.toList());
-		return categoryRepository.saveAll(categories);
-
+	public Set<Category> saveAll(Set<Category>categories) {
+		return (categoryRepository.saveAll(categories)).stream().collect(Collectors.toSet());
 	}
 }

@@ -2,6 +2,7 @@ package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,7 +37,6 @@ public class CarServiceImpl implements CarService {
 	private final SpecificationManager<Car> specificationManager;
 	private final CarConverter carConverter;
 	private static final String SPLIT_TO_ARRAY = ",";
-
 
 	@Override
 	public Long delete(Long id) {
@@ -86,9 +86,9 @@ public class CarServiceImpl implements CarService {
 	}
 
 	@Override
-	public void saveAll(List<Car> cars) {
+	public void saveAll(Set<Car> cars) {
 		carRepository.saveAll(cars);
-		
+
 	}
 
 	@Override

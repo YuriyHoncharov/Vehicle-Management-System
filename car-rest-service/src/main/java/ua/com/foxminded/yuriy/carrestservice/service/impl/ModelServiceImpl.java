@@ -3,6 +3,7 @@ package ua.com.foxminded.yuriy.carrestservice.service.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
@@ -84,13 +85,10 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public List<Model> saveAll(Map<String, String> modelBrandMap, Map<String, Brand> brandMap) {
-		List<Model> models = modelBrandMap.entrySet().stream().map(entry -> {
-			String modelName = entry.getKey();
-			String brandName = entry.getValue();
-			Brand brand = brandMap.get(brandName);
-			return modelRepository.getByName(modelName).orElse(new Model(modelName, brand));
-		}).collect(Collectors.toList());
-		return modelRepository.saveAll(models);
+	public Set<Model> saveAll(Set<Model> models) {
+		return (modelRepository.saveAll(models)).stream().collect(Collectors.toSet());
+		
 	}
+
+
 }

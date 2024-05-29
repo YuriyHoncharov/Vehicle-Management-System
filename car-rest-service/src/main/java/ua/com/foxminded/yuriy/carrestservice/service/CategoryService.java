@@ -1,6 +1,7 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
 import java.util.List;
+import java.util.Set;
 
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
@@ -22,6 +23,6 @@ public interface CategoryService {
 
 	Category getById(Long id);
 
-	List<Category> saveAll(List<String> categoryNames);
+	Set<Category> saveAll(Set<Category>categories);
 
 }

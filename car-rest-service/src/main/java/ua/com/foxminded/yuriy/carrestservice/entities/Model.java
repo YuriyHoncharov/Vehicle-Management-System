@@ -31,7 +31,7 @@ public class Model {
 	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "brand_Id")
+	@JoinColumn(name = "brand_Id")	
 	private Brand brand;
 
 	public Model(String name, Brand brand) {
@@ -42,5 +42,4 @@ public class Model {
 	public Model(String name) {
 		this.name = name;
 	}
-
 }

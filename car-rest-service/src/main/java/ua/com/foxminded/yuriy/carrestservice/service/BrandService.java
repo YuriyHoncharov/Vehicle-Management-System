@@ -1,7 +1,6 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
-import java.util.List;
-
+import java.util.Set;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPostDto;
@@ -23,6 +22,6 @@ public interface BrandService {
 	
 	Brand getById(Long id);		
 	
-	List<Brand> saveAll (List<String>brandNames);
+	Set<Brand>saveAll (Set<Brand>brands);
 	
 }

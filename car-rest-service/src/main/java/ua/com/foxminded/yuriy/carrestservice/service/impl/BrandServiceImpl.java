@@ -90,9 +90,7 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	@Override
-	public List<Brand> saveAll(List<String> brandNames) {
-		List<Brand> brands = brandNames.stream().map(name -> brandRepository.getByName(name).orElse(new Brand(name)))
-				.collect(Collectors.toList());
-		return brandRepository.saveAll(brands);
+	public Set<Brand> saveAll(Set<Brand> brands) {
+			return (brandRepository.saveAll(brands)).stream().collect(Collectors.toSet());
 	}
 }
