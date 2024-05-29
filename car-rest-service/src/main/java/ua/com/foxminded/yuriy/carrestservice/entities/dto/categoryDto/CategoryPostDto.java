@@ -5,10 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CategoryDto {
-	@NotNull
-	@NotBlank
-	private Long id;
+public class CategoryPostDto {
 	@NotNull
 	@NotBlank
 	private String name;

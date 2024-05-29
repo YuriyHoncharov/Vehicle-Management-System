@@ -20,7 +20,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		String error = "Malformed JSON request";
-		return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, error, ex));
+		return buildResponseEntity(new ApiError(HttpStatus.NOT_FOUND, error, ex));
 	}
 
 	private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
@@ -38,7 +38,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	 @ExceptionHandler({FilterIllegalArgumentException.class})
 	   protected ResponseEntity<Object> handleFilterIllegalArgumentException(
 	   		FilterIllegalArgumentException ex) {
-	       ApiError apiError = new ApiError(HttpStatus.BAD_GATEWAY);
+	       ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
 	       apiError.setMessage(ex.getMessage());
 	       return buildResponseEntity(apiError);
 	   }

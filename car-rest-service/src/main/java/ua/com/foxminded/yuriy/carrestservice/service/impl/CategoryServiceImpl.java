@@ -1,6 +1,10 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,14 +45,15 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public CategoryDto getById(Long id) {
-		return categoryConverter.convertToDto(
-				categoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Category not found")));
+	public CategoryDto getDtoById(Long id) {
+		return categoryConverter.convertToDto(categoryRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Category with following ID not found : " + id.toString())));
 	}
 
 	@Override
 	public Category getByName(String name) {
-		return categoryRepository.getByName(name).orElseThrow(() -> new EntityNotFoundException("Entity non found"));
+		return categoryRepository.getByName(name)
+				.orElseThrow(() -> new EntityNotFoundException("Entity with following Name not found : " + name));
 	}
 
 	@Override
@@ -63,4 +68,14 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 	}
 
+	@Override
+	public Category getById(Long id) {
+		return categoryRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Entity with following ID not found : " + id.toString()));
+	}
+
+	@Override
+	public Set<Category> saveAll(Set<Category>categories) {
+		return (categoryRepository.saveAll(categories)).stream().collect(Collectors.toSet());
+	}
 }

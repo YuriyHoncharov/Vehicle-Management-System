@@ -1,18 +1,14 @@
-package ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto;
+package ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
 @Data
-public class ModelPutDto {
+public class CategoryBasicDto {
 	@NotNull
-	@NotBlank
 	private Long id;
 	@NotNull
 	@NotBlank
 	private String name;
-	@NotNull
-	@NotBlank
-	private Long brandId;
-
 }

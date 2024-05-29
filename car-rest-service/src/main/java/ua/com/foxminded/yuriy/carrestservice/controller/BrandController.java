@@ -44,7 +44,7 @@ public class BrandController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<BrandDto> get(@PathVariable(value = "id") Long id) {
-		BrandDto brand = brandService.getById(id);
+		BrandDto brand = brandService.getDtoById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(brand);
 	}
 }

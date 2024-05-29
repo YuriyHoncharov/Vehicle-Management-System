@@ -1,4 +1,4 @@
-package ua.com.foxminded.yuriy.carrestservice.serviceTests;
+package ua.com.foxminded.yuriy.carrestservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
