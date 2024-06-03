@@ -1,8 +1,11 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -44,7 +47,7 @@ public class CarServiceIT {
 	void update_shouldUpdateAndReturnCarDtoObject_ifDataIsCorrect() {
 		CarPutDto car = new CarPutDto();
 		car.setId(1L);
-		Set<Long>categories = new HashSet<>();
+		List<Long>categories = new ArrayList<>();
 		categories.add(2L);
 		car.setCategories(categories);
 		car.setBrandId(2L);

@@ -16,7 +16,7 @@ public interface ModelService {
 
 	ModelDto getDtoById(Long id);
 
-	Model getByName(String name);
+	Model getByNameAndBrandId(String name, Long brandId);
 
 	Model getById(Long id);
 	

@@ -26,7 +26,7 @@ public class ModelServiceImpl implements ModelService {
 	private final ModelRepository modelRepository;
 	private final ModelConverter modelConverter;
 	private final BrandService brandService;
-
+	
 	@Override
 	public Long delete(Long id) {
 		modelRepository.deleteById(id);
@@ -36,22 +36,22 @@ public class ModelServiceImpl implements ModelService {
 	@Transactional
 	@Override
 	public ModelDto save(@Valid ModelPostDto model) {
-		Brand modelBrand = brandService.getById(model.getBrandId());
-		if (checkIfModelExists(model.getName(), modelBrand.getName())) {
-			throw new EntityAlreadyExistException("Entity with following Model & Brand name already exist : "
-					+ model.getName() + " - " + modelBrand.getName());
+		
+		if (checkIfModelExists(model.getName(), model.getBrandId())) {
+			throw new EntityAlreadyExistException("Entity with following Model & Brand_ID name already exist : "
+					+ model.getName() + " - " + model.getBrandId());
 		}
 		Model newModel = new Model();
 		newModel.setName(model.getName());
-		newModel.setBrand(modelBrand);
+		newModel.setBrand(brandService.getById(model.getBrandId()));
 		Model savedModel = modelRepository.save(newModel);
 		return modelConverter.convetToModelDto(savedModel);
 	}
 
-	private boolean checkIfModelExists(String modelName, String brandName) {
+	private boolean checkIfModelExists(String modelName, Long brandId) {
 		try {
-			Model existingModel = getByName(modelName);
-			return existingModel != null && existingModel.getBrand().getName().equals(brandName);
+			Model existingModel = getByNameAndBrandId(modelName, brandId);
+			return existingModel.getName().equals(modelName) && existingModel.getBrand().getId() == brandId;
 		} catch (EntityNotFoundException e) {
 			return false;
 		}
@@ -61,7 +61,7 @@ public class ModelServiceImpl implements ModelService {
 	@Override
 	public ModelDto update(@Valid ModelPutDto model) {
 		Brand brand = brandService.getById(model.getBrandId());
-		if (checkIfModelExists(model.getName(), brand.getName())) {
+		if (checkIfModelExists(model.getName(), brand.getId())) {
 			throw new EntityAlreadyExistException(
 					"Entity with following Model & Brand name already exist : " + model.getName() + " - " + brand.getName());
 		}
@@ -80,8 +80,8 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public Model getByName(String name) {
-		return modelRepository.getByName(name).orElseThrow(() -> new EntityNotFoundException("Model not found"));
+	public Model getByNameAndBrandId(String name, Long brandId) {
+		return modelRepository.getByNameAndBrandId(name, brandId).orElseThrow(() -> new EntityNotFoundException("Model not found"));
 	}
 
 	@Override

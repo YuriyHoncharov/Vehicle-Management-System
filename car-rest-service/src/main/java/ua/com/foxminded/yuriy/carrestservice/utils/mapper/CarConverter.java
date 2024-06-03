@@ -18,7 +18,7 @@ public class CarConverter {
 		CarDto carDto = new CarDto();
 		carDto.setBrand(car.getBrand().getName());
 		carDto.setCategories(
-				car.getCategory().stream().map(categoryConverter::convertToBasic).collect(Collectors.toSet()));
+				car.getCategory().stream().map(categoryConverter::convertToBasic).collect(Collectors.toList()));
 		carDto.setModel(car.getModel().getName());
 		carDto.setProductionYear(car.getProductionYear());
 		carDto.setId(car.getId());

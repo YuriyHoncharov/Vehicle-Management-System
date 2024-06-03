@@ -8,12 +8,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
-import ua.com.foxminded.yuriy.carrestservice.entities.Car;
-import ua.com.foxminded.yuriy.carrestservice.entities.Model;
-import ua.com.foxminded.yuriy.carrestservice.repository.BrandRepository;
-import ua.com.foxminded.yuriy.carrestservice.repository.CarRepository;
-import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.CsvImportService;
 import ua.com.foxminded.yuriy.carrestservice.utils.CsvDataHandler;
 import ua.com.foxminded.yuriy.carrestservice.utils.CsvFileData;
@@ -30,13 +24,6 @@ public class DataGenerator {
 	private FilesReader filesReader;
 	@Autowired
 	private CsvDataHandler csvDataHandler;	
-	@Autowired
-	private BrandRepository brandRepository;
-	@Autowired
-	private ModelRepository modelRepository;
-	@Autowired
-	private CarRepository carRepository;
-
 	@Value("${dataFile}")
 	private String dataFilePath;
 	
@@ -45,11 +32,6 @@ public class DataGenerator {
 		File file = new File(dataFilePath);
 		List<String[]> dataFromCsv = filesReader.readCSVRecords(file);
 		List<CsvFileData> data = csvDataHandler.convertToDTOs(dataFromCsv);
-		csvImportService.loadToDataBase(data);
-		
-		
-		List<Brand>brands = brandRepository.findAll();
-		List<Model>models = modelRepository.findAll();
-		List<Car>cars = carRepository.findAll();		
+		csvImportService.loadToDataBase(data);		
 	}
 }

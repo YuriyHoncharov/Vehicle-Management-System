@@ -1,26 +1,27 @@
 package ua.com.foxminded.yuriy.carrestservice.entities;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Objects;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.ToString.Exclude;
 
 @Entity
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-@EqualsAndHashCode
 @Table
+@ToString
 public class Brand {
 
 	@Id
@@ -29,12 +30,30 @@ public class Brand {
 
 	@Column(nullable = false, unique = true)
 	private String name;
-
-	@OneToMany(mappedBy = "brand", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-			CascadeType.REFRESH }, orphanRemoval = true)
-	private Set<Model> models;
+	
+	@Exclude
+	@OneToMany(mappedBy = "brand", cascade = CascadeType.REMOVE)
+	private List<Model> models;
 
 	public Brand(String name) {
 		this.name = name;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Brand other = (Brand) obj;
+		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
+	}
+
 }

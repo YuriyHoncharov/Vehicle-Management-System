@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ModelDto {
-	@NotBlank
+	@NotNull
 	private Long id;
 	@NotNull
 	@NotBlank

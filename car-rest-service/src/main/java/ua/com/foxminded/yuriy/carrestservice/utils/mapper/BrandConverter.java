@@ -11,13 +11,16 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDtoPage;
 @Component
 @RequiredArgsConstructor
 public class BrandConverter {
-	
+
 	private final ModelConverter modelConverter;
 
 	public BrandDto convertToDto(Brand brand) {
 		BrandDto brandDto = new BrandDto();
 		brandDto.setName(brand.getName());
-		brandDto.setModels(brand.getModels().stream().map(modelConverter::convertToBasic).collect(Collectors.toSet()));
+		if (!(brand.getModels() == null)) {
+			brandDto
+					.setModels(brand.getModels().stream().map(modelConverter::convertToBasic).collect(Collectors.toList()));
+		}
 		brandDto.setId(brand.getId());
 		return brandDto;
 	}

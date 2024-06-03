@@ -22,4 +22,6 @@ public interface BrandService {
 	
 	Set<Brand>saveAll(Set<Brand>brands);
 	
+	Brand getByIdAndName(String name, Long id);
+	
 }

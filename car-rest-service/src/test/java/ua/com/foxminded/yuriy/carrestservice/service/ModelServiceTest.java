@@ -43,17 +43,19 @@ public class ModelServiceTest {
 	void getByName_shouldReturnCorrectModel_ifExist() {
 		String name = "name";
 		Model model = new Model();
+		Long id = 1L;
 		model.setName(name);
-		when(modelRepository.getByName(name)).thenReturn(Optional.of(model));
-		assertTrue(modelService.getByName(name).getName().equals("name"));
-		verify(modelRepository, times(1)).getByName(name);
+		when(modelRepository.getByNameAndBrandId(name, id)).thenReturn(Optional.of(model));
+		assertTrue(modelService.getByNameAndBrandId(name, id).getName().equals("name"));
+		verify(modelRepository, times(1)).getByNameAndBrandId(name, id);
 	}
 
 	@Test
 	void getByName_shouldThrowException_ifNotPresentInDb() {
 		String name = "name";
-		when(modelRepository.getByName(name)).thenReturn(Optional.empty());
-		assertThrows(EntityNotFoundException.class, () -> modelService.getByName(name));
+		Long id = 1L;
+		when(modelRepository.getByNameAndBrandId(name, id)).thenReturn(Optional.empty());
+		assertThrows(EntityNotFoundException.class, () -> modelService.getByNameAndBrandId(name, id));
 	}
 
 	@Test
@@ -67,7 +69,7 @@ public class ModelServiceTest {
 	    modelToSave.setBrandId(1L);
 	    modelToSave.setName(notExistingModel);	 
 	    when(brandService.getById(anyLong())).thenReturn(brand);
-	    when(modelRepository.getByName(notExistingModel)).thenReturn(Optional.empty());	  
+	    when(modelRepository.getByNameAndBrandId(notExistingModel, 1L)).thenReturn(Optional.empty());	  
 	    ModelDto savedModel = modelService.save(modelToSave);	  
 	    verify(modelRepository, times(1)).save(any(Model.class));
 	}

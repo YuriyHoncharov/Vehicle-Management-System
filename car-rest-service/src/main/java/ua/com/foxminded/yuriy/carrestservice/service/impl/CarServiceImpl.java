@@ -80,7 +80,9 @@ public class CarServiceImpl implements CarService {
 	@Override
 	@Transactional
 	public CarDto update(@Valid CarPutDto car) {
-
+		if (checkIfCarExists(car.getObjectId())) {
+			throw new EntityAlreadyExistException("Car with following Object ID is already exists : " + car.getObjectId());
+		}
 		Car newCar = carRepository.findById(car.getId())
 				.orElseThrow(() -> new EntityNotFoundException("Car with following ID was not found : " + car.getId()));
 		newCar.setObjectId(car.getObjectId());
