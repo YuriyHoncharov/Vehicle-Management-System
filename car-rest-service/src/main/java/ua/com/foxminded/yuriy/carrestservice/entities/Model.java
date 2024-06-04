@@ -1,26 +1,25 @@
 package ua.com.foxminded.yuriy.carrestservice.entities;
 
+import java.util.Objects;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-@EqualsAndHashCode
 @Table
-
+@ToString
 public class Model {
 
 	@Id
@@ -30,8 +29,8 @@ public class Model {
 	@Column(name = "name")
 	private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "brand_Id")	
+	@ManyToOne
+	@JoinColumn(name = "brand_Id")
 	private Brand brand;
 
 	public Model(String name, Brand brand) {
@@ -42,4 +41,23 @@ public class Model {
 	public Model(String name) {
 		this.name = name;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(brand, id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Model other = (Model) obj;
+		return Objects.equals(brand, other.brand) && Objects.equals(id, other.id) && Objects.equals(name, other.name);
+	}
+	
+	
 }

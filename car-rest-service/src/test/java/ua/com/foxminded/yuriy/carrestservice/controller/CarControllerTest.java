@@ -19,23 +19,19 @@ import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
-public class CarControllerTest {
-
-	@Mock
-	private MockMvc mockMvc;
+class CarControllerTest {
 
 	@Mock
 	private CarService carService;
-
 	@InjectMocks
 	private CarController carController;
-
+	private MockMvc mockMvc;
 	private ObjectMapper objectMapper;
 
 	@BeforeEach
@@ -57,7 +53,7 @@ public class CarControllerTest {
 
 		CarPostDto carPostDto = new CarPostDto();
 		carPostDto.setBrandId(1L);
-		Set<Long> categories = new HashSet<>();
+		List<Long> categories = new ArrayList<>();
 		categories.add(1L);
 		carPostDto.setModelId(1L);
 		carPostDto.setObjectId("111");
@@ -72,7 +68,7 @@ public class CarControllerTest {
 		CarPutDto carPut = new CarPutDto();
 		carPut.setBrandId(1L);
 		carPut.setId(1L);
-		Set<Long> categories = new HashSet<>();
+		List<Long> categories = new ArrayList<>();
 		categories.add(1L);
 		carPut.setCategories(categories);
 		carPut.setModelId(1L);
@@ -92,7 +88,7 @@ public class CarControllerTest {
 	void get_shouldReturnCarById() throws Exception {
 		Long id = 1L;
 		CarDto carDto = new CarDto();
-		Set<CategoryBasicDto> categories = new HashSet<>();
+		List<CategoryBasicDto> categories = new ArrayList<>();
 		CategoryBasicDto catDto = new CategoryBasicDto();
 		catDto.setId(1L);
 		catDto.setName("nameDto");

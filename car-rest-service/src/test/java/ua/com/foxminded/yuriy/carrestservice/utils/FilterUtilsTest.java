@@ -3,10 +3,8 @@ package ua.com.foxminded.yuriy.carrestservice.utils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,11 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import ua.com.foxminded.yuriy.carrestservice.exception.FilterIllegalArgumentException;
-import ua.com.foxminded.yuriy.carrestservice.utils.FilterUtils;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FilterIllegalArgumentException;
 
 @ExtendWith(MockitoExtension.class)
-public class FilterUtilsTest {
+class FilterUtilsTest {
 
 	@Mock
 	private FilterUtils filterUtils;
@@ -48,7 +45,7 @@ public class FilterUtilsTest {
 	}
 
 	@Test
-	public void testGetPageFromFiltersWithInvalidPageNumber() {
+	void testGetPageFromFiltersWithInvalidPageNumber() {
 
 		Map<String, String> filters = new HashMap<>();
 		filters.put("sortBy", "nam1");
@@ -61,7 +58,7 @@ public class FilterUtilsTest {
 	}
 
 	@Test
-	public void testGetPageFromFiltersWithInvalidSortOrder() {
+	void testGetPageFromFiltersWithInvalidSortOrder() {
 
 		Map<String, String> filters = new HashMap<>();
 		filters.put("sortBy", "nam1");

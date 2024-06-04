@@ -27,11 +27,11 @@ import ua.com.foxminded.yuriy.carrestservice.repository.specification.car.CarYea
 @Sql(scripts = { "/schema.sql", "/test-data.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = { "/clear.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @ActiveProfiles("test")
-public class CarRepositoryIT {
+class CarRepositoryIT {
 
 	@Autowired
 	private CarRepository carRepository;
-	
+
 	private static final String YEAR_2017 = "2017";
 	private static final String YEAR_2020 = "2020";
 	private static final String INCORRECT_YEAR = "2200";
@@ -43,7 +43,7 @@ public class CarRepositoryIT {
 	private static final String TOYOYA_CATEGORY = "SUV";
 
 	@Test
-	public void getAllCar_shouldReturnCorrectCarsByYear_ifDataExists() {
+	void getAllCar_shouldReturnCorrectCarsByYear_ifDataExists() {
 		CarYearOfProductionSpecification specification = new CarYearOfProductionSpecification();
 		Specification<Car> carSpecification = specification.getSpecification(new String[] { YEAR_2020 });
 		Page<Car> carPage = carRepository.findAll(carSpecification, PageRequest.of(0, 5));
@@ -52,7 +52,7 @@ public class CarRepositoryIT {
 	}
 
 	@Test
-	public void getAllCar_shouldReturnEmptyList_dataNotExist() {
+	void getAllCar_shouldReturnEmptyList_dataNotExist() {
 		CarYearOfProductionSpecification specification = new CarYearOfProductionSpecification();
 		Specification<Car> carSpecification = specification.getSpecification(new String[] { INCORRECT_YEAR });
 		Page<Car> carPage = carRepository.findAll(carSpecification, PageRequest.of(0, 10));
@@ -60,31 +60,31 @@ public class CarRepositoryIT {
 	}
 
 	@Test
-	public void getAllCar_shouldReturnCorrectCarsByBrand_ifDataExist() {
+	void getAllCar_shouldReturnCorrectCarsByBrand_ifDataExist() {
 		CarBrandSpecification spec = new CarBrandSpecification();
 		Specification<Car> carSpec = spec.getSpecification(new String[] { HONDA_BRAND, TOYOTA_BRAND });
 		Page<Car> carPage = carRepository.findAll(carSpec, PageRequest.of(0, 10));
-		assertTrue(carPage.getContent().size() == 2);
+		assertEquals(2, carPage.getContent().size());
 	}
 
 	@Test
-	public void getAllCar_shouldreturnCorrectCatByModel_ifDataExist() {
+	void getAllCar_shouldreturnCorrectCatByModel_ifDataExist() {
 		CarModelSpecification spec = new CarModelSpecification();
 		Specification<Car> carSpec = spec.getSpecification(new String[] { TOYOYA_MODEL, HONDA_MODEL });
 		Page<Car> carPage = carRepository.findAll(carSpec, PageRequest.of(0, 10));
-		assertTrue(carPage.getContent().size() == 2);
+		assertEquals(2, carPage.getContent().size());
 	}
 
 	@Test
-	public void getAllCar_shouldReturnCorrectCarByCategory_ifDataExist() {
+	void getAllCar_shouldReturnCorrectCarByCategory_ifDataExist() {
 		CarCategorySpecification spec = new CarCategorySpecification();
 		Specification<Car> carSpec = spec.getSpecification(new String[] { TOYOYA_CATEGORY, HONDA_CATEGORY });
 		Page<Car> carPage = carRepository.findAll(carSpec, PageRequest.of(0, 10));
-		assertTrue(carPage.getContent().size() == 3);
+		assertEquals(3, carPage.getContent().size());
 	}
 
 	@Test
-	public void getAllCar_shouldReturnCorrectCarByMultipleFilter_ifDataExist() {
+	void getAllCar_shouldReturnCorrectCarByMultipleFilter_ifDataExist() {
 
 		// YEAR
 		CarYearOfProductionSpecification yearSpec = new CarYearOfProductionSpecification();
@@ -110,27 +110,27 @@ public class CarRepositoryIT {
 
 		Page<Car> carPage = carRepository.findAll(combinedSpec, PageRequest.of(0, 10));
 		Car car = carPage.getContent().get(0);
-		assertTrue(carPage.getContent().size() == 1);
-		assertTrue(car.getProductionYear() == Integer.parseInt(YEAR_2020));
+		assertEquals(1, carPage.getContent().size());
+		assertEquals(Integer.parseInt(YEAR_2020), car.getProductionYear());
 		assertTrue(car.getCategory().stream().anyMatch(category -> category.getName().equals(HONDA_CATEGORY)));
-		assertTrue(car.getBrand().getName().equals(HONDA_BRAND));
-		assertTrue(car.getModel().getName().equals(HONDA_MODEL));
+		assertEquals(HONDA_BRAND, car.getBrand().getName());
+		assertEquals(HONDA_MODEL, car.getModel().getName());
 	}
 
 	@Test
-	public void getAllCar_shouldReturnCorrectCarsBetweenTwoYearsProductionFilters() {
+	void getAllCar_shouldReturnCorrectCarsBetweenTwoYearsProductionFilters() {
 		CarYearOfProductionSpecification carYearSpecification = new CarYearOfProductionSpecification();
 		Specification<Car> specification = carYearSpecification.getSpecification(new String[] { YEAR_2017, YEAR_2020 });
 		Page<Car> page = carRepository.findAll(specification, PageRequest.of(0, 10));
-		assertEquals(page.getContent().size(), 4);
+		assertEquals(4, page.getContent().size());
 	}
 
 	@Test
-	public void getAllCar_incorrectFilterName_shouldReturnEmptyPage() {
+	void getAllCar_incorrectFilterName_shouldReturnEmptyPage() {
 		CarModelSpecification spec = new CarModelSpecification();
 		Specification<Car> carSpec = spec.getSpecification(new String[] { "taktak", "dada" });
 		Page<Car> carPage = carRepository.findAll(carSpec, PageRequest.of(0, 10));
-		assertTrue(carPage.getContent().size() == 0);
+		assertEquals(0, carPage.getContent().size());
 	}
 
 }

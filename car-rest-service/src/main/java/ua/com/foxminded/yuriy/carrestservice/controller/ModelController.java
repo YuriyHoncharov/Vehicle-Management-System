@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 
@@ -23,7 +24,7 @@ public class ModelController {
 	private final ModelService modelService;
 
 	@PostMapping
-	public ResponseEntity<ModelDto> save(@RequestBody @Valid ModelDto model) {
+	public ResponseEntity<ModelDto> save(@RequestBody @Valid ModelPostDto model) {
 		ModelDto createdModel = modelService.save(model);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdModel);
 	}

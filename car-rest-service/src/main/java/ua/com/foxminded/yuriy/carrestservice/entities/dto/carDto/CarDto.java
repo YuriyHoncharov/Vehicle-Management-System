@@ -1,7 +1,6 @@
 package ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto;
 
-import java.util.Set;
-
+import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -17,10 +16,13 @@ public class CarDto {
 	private String brand;
 	@NotNull
 	@NotBlank
+	private String objectId;
+	@NotNull
+	@NotBlank
 	private String model;
 	@NotNull
 	@NotBlank
 	private int productionYear;
 	@NotNull
-	private Set<CategoryBasicDto> categories;
+	private List<CategoryBasicDto> categories;
 }
