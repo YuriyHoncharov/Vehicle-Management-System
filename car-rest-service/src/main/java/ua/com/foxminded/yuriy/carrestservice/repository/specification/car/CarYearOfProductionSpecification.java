@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import jakarta.persistence.criteria.Predicate;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
-import ua.com.foxminded.yuriy.carrestservice.exception.FilterIllegalArgumentException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FilterIllegalArgumentException;
 import ua.com.foxminded.yuriy.carrestservice.repository.specification.SpecificationProvider;
 
 @Component

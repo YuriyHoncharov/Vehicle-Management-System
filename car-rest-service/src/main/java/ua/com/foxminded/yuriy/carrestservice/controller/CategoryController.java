@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 
@@ -24,7 +25,7 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	@PostMapping
-	public ResponseEntity<CategoryDto> save(@RequestBody @Valid CategoryDto category) {
+	public ResponseEntity<CategoryDto> save(@RequestBody @Valid CategoryPostDto category) {
 		CategoryDto createdCategory = categoryService.save(category);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
 	}

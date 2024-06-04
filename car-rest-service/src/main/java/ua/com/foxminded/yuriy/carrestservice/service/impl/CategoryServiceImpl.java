@@ -1,17 +1,17 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CategoryRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CategoryConverter;
@@ -28,20 +28,37 @@ public class CategoryServiceImpl implements CategoryService {
 		categoryRepository.deleteById(id);
 		return id;
 	}
-
+	
+	@Transactional
 	@Override
-	public CategoryDto save(@Valid CategoryDto category) {
+	public CategoryDto save(@Valid CategoryPostDto category) {
+		if (checkIfCategoryExists(category.getName())) {
+			throw new EntityAlreadyExistException("Category with following name already exists : " + category.getName());
+		}
 		Category newCategory = new Category();
 		newCategory.setName(category.getName());
 		return categoryConverter.convertToDto(categoryRepository.save(newCategory));
-	}
 
+	}
+	
+	@Transactional
 	@Override
 	public CategoryDto update(@Valid CategoryPutDto category) {
-		Category categoryToUpdate = categoryRepository.findById(category.getId()).orElseThrow(
-				() -> new EntityNotFoundException("Category want not found with following ID : " + category.getId()));
+		if (checkIfCategoryExists(category.getName())) {
+			throw new EntityAlreadyExistException("Category with following name already exists : " + category.getName());
+		}
+		Category categoryToUpdate = getById(category.getId());
 		categoryToUpdate.setName(category.getName());
 		return categoryConverter.convertToDto(categoryRepository.save(categoryToUpdate));
+	}
+
+	private boolean checkIfCategoryExists(String name) {
+		try {
+			Category existingCategory = getByName(name);
+			return existingCategory != null;
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
 	}
 
 	@Override
@@ -57,25 +74,14 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category save(String category) {
-		Optional<Category> existingCategory = categoryRepository.getByName(category);
-		if (!existingCategory.isPresent()) {
-			Category newCategory = new Category();
-			newCategory.setName(category);
-			return categoryRepository.save(newCategory);
-		} else {
-			return existingCategory.get();
-		}
-	}
-
-	@Override
 	public Category getById(Long id) {
 		return categoryRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Entity with following ID not found : " + id.toString()));
+				.orElseThrow(() -> new EntityNotFoundException("Category with following ID not found : " + id.toString()));
 	}
-
+	
+	@Transactional
 	@Override
-	public Set<Category> saveAll(Set<Category>categories) {
-		return (categoryRepository.saveAll(categories)).stream().collect(Collectors.toSet());
+	public Set<Category> saveAll(Set<Category> categories) {
+		return new HashSet<>(categoryRepository.saveAll(categories));
 	}
 }

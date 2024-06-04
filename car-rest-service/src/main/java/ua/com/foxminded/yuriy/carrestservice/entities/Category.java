@@ -6,16 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
-@Data
 @Entity
+@Data
+@NoArgsConstructor
 @Table
 
 public class Category {
@@ -25,7 +21,7 @@ public class Category {
 	private Long id;
 
 	@Column(name = "name")
-	private String name;
+	private String name;	
 
 	public Category(String name) {
 		this.name = name;

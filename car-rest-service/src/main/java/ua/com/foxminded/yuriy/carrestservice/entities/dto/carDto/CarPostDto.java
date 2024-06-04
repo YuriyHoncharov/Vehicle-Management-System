@@ -1,7 +1,6 @@
 package ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto;
 
-import java.util.Set;
-
+import java.util.List;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -18,6 +17,6 @@ public class CarPostDto {
 	@NotNull
 	private Long modelId;
 	@NotEmpty
-	private Set<Long> categories;
+	private List<Long> categories;
 
 }

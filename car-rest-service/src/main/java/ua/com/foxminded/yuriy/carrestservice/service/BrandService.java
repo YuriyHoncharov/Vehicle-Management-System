@@ -18,10 +18,10 @@ public interface BrandService {
 	
 	Brand getByName(String name);
 	
-	Brand save(String brandName);
-	
 	Brand getById(Long id);		
 	
-	Set<Brand>saveAll (Set<Brand>brands);
+	Set<Brand>saveAll(Set<Brand>brands);
+	
+	Brand getByIdAndName(String name, Long id);
 	
 }

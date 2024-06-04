@@ -1,11 +1,8 @@
 package ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto;
 
-import java.util.Set;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelBasicDto;
 
 @Data
 public class BrandDto {
@@ -15,6 +12,5 @@ public class BrandDto {
 	@NotBlank
 	@NotNull (message = "Name of Brand cannot be null.")
 	private String name;
-	@NotNull
-	private Set<ModelBasicDto> models;
+	
 }

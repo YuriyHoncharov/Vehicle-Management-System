@@ -1,19 +1,18 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
-import ua.com.foxminded.yuriy.carrestservice.repository.BrandRepository;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
@@ -26,29 +25,49 @@ public class ModelServiceImpl implements ModelService {
 	private final ModelRepository modelRepository;
 	private final ModelConverter modelConverter;
 	private final BrandService brandService;
-	private final BrandRepository brandRepository;
-
+	
 	@Override
 	public Long delete(Long id) {
 		modelRepository.deleteById(id);
 		return id;
 	}
-
+	
+	@Transactional
 	@Override
-	public ModelDto save(@Valid ModelDto model) {
+	public ModelDto save(@Valid ModelPostDto model) {
+		
+		if (checkIfModelExists(model.getName(), model.getBrandId())) {
+			throw new EntityAlreadyExistException("Entity with following Model & Brand_ID name already exist : "
+					+ model.getName() + " - " + model.getBrandId());
+		}
 		Model newModel = new Model();
 		newModel.setName(model.getName());
-		newModel.setBrand(brandService.getByName(model.getBrand()));
-		return modelConverter.convetToModelDto(modelRepository.save(newModel));
+		newModel.setBrand(brandService.getById(model.getBrandId()));
+		Model savedModel = modelRepository.save(newModel);
+		return modelConverter.convetToModelDto(savedModel);
 	}
 
+	private boolean checkIfModelExists(String modelName, Long brandId) {
+		try {
+			Model existingModel = getByNameAndBrandId(modelName, brandId);
+			return existingModel.getName().equals(modelName) && existingModel.getBrand().getId() == brandId;
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
+	}
+	
+	@Transactional
 	@Override
 	public ModelDto update(@Valid ModelPutDto model) {
+		Brand brand = brandService.getById(model.getBrandId());
+		if (checkIfModelExists(model.getName(), brand.getId())) {
+			throw new EntityAlreadyExistException(
+					"Entity with following Model & Brand name already exist : " + model.getName() + " - " + brand.getName());
+		}
 		Model modelToUpdate = modelRepository.findById(model.getId())
 				.orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + model.getId()));
 		modelToUpdate.setName(model.getName());
-		modelToUpdate.setBrand(brandRepository.findById(model.getBrandId()).orElseThrow(
-				() -> new EntityNotFoundException("Brand with following ID not exists : " + model.getBrandId())));
+		modelToUpdate.setBrand(brandService.getById(model.getBrandId()));
 		return modelConverter.convetToModelDto(modelRepository.save(modelToUpdate));
 
 	}
@@ -60,22 +79,8 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public Model getByName(String name) {
-		return modelRepository.getByName(name).orElseThrow(() -> new EntityNotFoundException("Model not found"));
-	}
-
-	@Override
-	public Model save(String modelName, Brand brand) {
-		Optional<Model> existingModel = modelRepository.getByName(modelName);
-		if (!existingModel.isPresent()) {
-			Model model = new Model();
-			model.setName(modelName);
-			model.setBrand(brand);
-			return modelRepository.save(model);
-		} else {
-			existingModel.get().setBrand(brand);
-			return modelRepository.save(existingModel.get());
-		}
+	public Model getByNameAndBrandId(String name, Long brandId) {
+		return modelRepository.getByNameAndBrandId(name, brandId).orElseThrow(() -> new EntityNotFoundException("Model not found"));
 	}
 
 	@Override
@@ -83,12 +88,12 @@ public class ModelServiceImpl implements ModelService {
 		return modelRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + id.toString()));
 	}
-
+	
+	@Transactional
 	@Override
 	public Set<Model> saveAll(Set<Model> models) {
-		return (modelRepository.saveAll(models)).stream().collect(Collectors.toSet());
-		
-	}
+		return new HashSet<>(modelRepository.saveAll(models));
 
+	}
 
 }

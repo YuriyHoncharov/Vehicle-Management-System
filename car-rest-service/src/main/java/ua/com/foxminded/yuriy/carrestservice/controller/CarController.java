@@ -55,7 +55,5 @@ public class CarController {
 	public ResponseEntity<CarDtoPage> getAllCars(@RequestParam(required = false) Map<String, String> filters) {
 		CarDtoPage carDtoPage = carService.getAll(filters);
 		return ResponseEntity.status(HttpStatus.OK).body(carDtoPage);
-
 	}
-
 }
