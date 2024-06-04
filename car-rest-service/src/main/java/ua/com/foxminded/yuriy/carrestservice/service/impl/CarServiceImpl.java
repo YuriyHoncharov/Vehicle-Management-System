@@ -9,13 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
+import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityAlreadyExistException;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.ValidationException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CarRepository;
 import ua.com.foxminded.yuriy.carrestservice.repository.specification.SpecificationManager;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
@@ -50,11 +53,19 @@ public class CarServiceImpl implements CarService {
 		if (checkIfCarExists(car.getObjectId())) {
 			throw new EntityAlreadyExistException("Car with following Object ID is already exists : " + car.getObjectId());
 		}
+		
+		Brand brand = brandService.getById(car.getBrandId());
+		Model model = modelService.getById(car.getModelId());
+		
+		if (!checkModelAndBrandCompatibility(brand, model)) {
+			throw new ValidationException("Model's actual brand don't match with selected Brand");
+		}
+		
 		Car newCar = new Car();
 		newCar.setObjectId(car.getObjectId());
-		newCar.setBrand(brandService.getById(car.getBrandId()));
+		newCar.setBrand(brand);
 		newCar.setProductionYear(car.getProductionYear());
-		newCar.setModel(modelService.getById(car.getModelId()));
+		newCar.setModel(model);
 		newCar.setCategory(car.getCategories().stream().map(categoryService::getById).collect(Collectors.toSet()));
 		return carConverter.convertToDto(carRepository.save(newCar));
 	}
@@ -83,12 +94,19 @@ public class CarServiceImpl implements CarService {
 		if (checkIfCarExists(car.getObjectId())) {
 			throw new EntityAlreadyExistException("Car with following Object ID is already exists : " + car.getObjectId());
 		}
+		Brand brand = brandService.getById(car.getBrandId());
+		Model model = modelService.getById(car.getModelId());
+		
+		if (!checkModelAndBrandCompatibility(brand, model)) {
+			throw new ValidationException("Model's actual brand don't match with selected Brand");
+		}
+		
 		Car newCar = carRepository.findById(car.getId())
 				.orElseThrow(() -> new EntityNotFoundException("Car with following ID was not found : " + car.getId()));
 		newCar.setObjectId(car.getObjectId());
-		newCar.setProductionYear(car.getProductionYear());
-		newCar.setBrand(brandService.getById(car.getBrandId()));
-		newCar.setModel(modelService.getById(car.getModelId()));
+		newCar.setProductionYear(car.getProductionYear());		
+		newCar.setBrand(brand);
+		newCar.setModel(model);
 		newCar.setCategory(car.getCategories().stream().map(categoryService::getById).collect(Collectors.toSet()));
 		return carConverter.convertToDto(carRepository.save(newCar));
 	}
@@ -100,6 +118,10 @@ public class CarServiceImpl implements CarService {
 		} catch (EntityNotFoundException e) {
 			return false;
 		}
+	}
+	
+	private boolean checkModelAndBrandCompatibility(Brand brand, Model model) {
+		return model.getBrand().getName().equals(brand.getName());
 	}
 
 	@Override

@@ -12,13 +12,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPostDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CategoryRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.impl.CategoryServiceImpl;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CategoryConverter;
 
+
 @ExtendWith(MockitoExtension.class)
-public class CategoryServiceTest {
+class CategoryServiceTest {
 
 	@Mock
 	private CategoryRepository categoryRepository;

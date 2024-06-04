@@ -12,8 +12,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
-import ua.com.foxminded.yuriy.carrestservice.exception.FileReadingException;
-import ua.com.foxminded.yuriy.carrestservice.exception.ValidationException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FileReadingException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.ValidationException;
 
 @Component
 @RequiredArgsConstructor

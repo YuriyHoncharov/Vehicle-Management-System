@@ -1,10 +1,9 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
@@ -12,8 +11,8 @@ import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityAlreadyExistException;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
@@ -93,7 +92,7 @@ public class ModelServiceImpl implements ModelService {
 	@Transactional
 	@Override
 	public Set<Model> saveAll(Set<Model> models) {
-		return (modelRepository.saveAll(models)).stream().collect(Collectors.toSet());
+		return new HashSet<>(modelRepository.saveAll(models));
 
 	}
 

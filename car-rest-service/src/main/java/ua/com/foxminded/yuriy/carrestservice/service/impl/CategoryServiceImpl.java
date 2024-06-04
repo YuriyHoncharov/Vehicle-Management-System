@@ -1,18 +1,17 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityAlreadyExistException;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CategoryRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CategoryConverter;
@@ -77,12 +76,12 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public Category getById(Long id) {
 		return categoryRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Entity with following ID not found : " + id.toString()));
+				.orElseThrow(() -> new EntityNotFoundException("Category with following ID not found : " + id.toString()));
 	}
 	
 	@Transactional
 	@Override
 	public Set<Category> saveAll(Set<Category> categories) {
-		return (categoryRepository.saveAll(categories)).stream().collect(Collectors.toSet());
+		return new HashSet<>(categoryRepository.saveAll(categories));
 	}
 }

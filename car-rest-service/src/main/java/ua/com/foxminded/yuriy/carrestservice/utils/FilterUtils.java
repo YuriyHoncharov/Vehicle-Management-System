@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import ua.com.foxminded.yuriy.carrestservice.exception.FilterIllegalArgumentException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FilterIllegalArgumentException;
 
 @Component
 public class FilterUtils {

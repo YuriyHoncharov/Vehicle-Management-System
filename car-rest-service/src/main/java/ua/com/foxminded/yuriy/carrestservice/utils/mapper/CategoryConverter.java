@@ -4,11 +4,9 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
-import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryBasicDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDtoPage;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelBasicDto;
 
 @Component
 public class CategoryConverter {

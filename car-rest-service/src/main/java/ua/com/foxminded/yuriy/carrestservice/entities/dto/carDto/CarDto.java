@@ -16,6 +16,9 @@ public class CarDto {
 	private String brand;
 	@NotNull
 	@NotBlank
+	private String objectId;
+	@NotNull
+	@NotBlank
 	private String model;
 	@NotNull
 	@NotBlank

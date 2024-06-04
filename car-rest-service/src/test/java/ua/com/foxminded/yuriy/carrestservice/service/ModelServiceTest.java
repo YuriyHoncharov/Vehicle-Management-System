@@ -1,5 +1,6 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,14 +21,14 @@ import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPostDto;
-import ua.com.foxminded.yuriy.carrestservice.exception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.service.impl.ModelServiceImpl;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.ModelConverter;
 
 @ExtendWith(MockitoExtension.class)
-public class ModelServiceTest {
+class ModelServiceTest {
 
 	@Mock
 	private ModelRepository modelRepository;
@@ -46,7 +47,7 @@ public class ModelServiceTest {
 		Long id = 1L;
 		model.setName(name);
 		when(modelRepository.getByNameAndBrandId(name, id)).thenReturn(Optional.of(model));
-		assertTrue(modelService.getByNameAndBrandId(name, id).getName().equals("name"));
+		assertEquals("name", modelService.getByNameAndBrandId(name, id).getName());
 		verify(modelRepository, times(1)).getByNameAndBrandId(name, id);
 	}
 

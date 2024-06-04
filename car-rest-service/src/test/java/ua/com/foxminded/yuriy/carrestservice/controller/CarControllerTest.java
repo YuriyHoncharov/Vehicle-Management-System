@@ -19,26 +19,19 @@ import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
-public class CarControllerTest {
-
-	@Mock
-	private MockMvc mockMvc;
+class CarControllerTest {
 
 	@Mock
 	private CarService carService;
-
 	@InjectMocks
 	private CarController carController;
-
+	private MockMvc mockMvc;
 	private ObjectMapper objectMapper;
 
 	@BeforeEach
@@ -96,7 +89,7 @@ public class CarControllerTest {
 		Long id = 1L;
 		CarDto carDto = new CarDto();
 		List<CategoryBasicDto> categories = new ArrayList<>();
-			CategoryBasicDto catDto = new CategoryBasicDto();
+		CategoryBasicDto catDto = new CategoryBasicDto();
 		catDto.setId(1L);
 		catDto.setName("nameDto");
 		categories.add(catDto);

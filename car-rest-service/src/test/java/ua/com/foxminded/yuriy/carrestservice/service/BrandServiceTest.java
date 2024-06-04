@@ -1,5 +1,9 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -15,14 +19,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPutDto;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
 import ua.com.foxminded.yuriy.carrestservice.repository.BrandRepository;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.impl.BrandServiceImpl;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.BrandConverter;
 
 @ExtendWith(MockitoExtension.class)
-public class BrandServiceTest {
+class BrandServiceTest {
 
 	@Mock
 	private BrandRepository brandRepository;
@@ -37,23 +44,19 @@ public class BrandServiceTest {
 	private BrandServiceImpl brandService;
 
 	@Test
-	void update_shouldUpdateModels_ifModelExists() {
-
+	void update_shouldUpdateBrandName_ifBrandNameIsNotExists() {
 		BrandPutDto brandPutDto = new BrandPutDto();
-		Long brandId = 1L;
+		Long brandId = 1L;		
 		brandPutDto.setId(brandId);
-		List<Long> model = new ArrayList<>();
-		model.add(1L);
-		brandPutDto.setModels(model);
+		brandPutDto.setName("testBrand");
+		when(brandRepository.findByName(brandPutDto.getName())).thenReturn(Optional.empty());
 		Brand brandToUpdate = new Brand();
-		Model modelToUpdate = new Model();
+		brandToUpdate.setName("newBrandName");
 		when(brandRepository.findById(brandId)).thenReturn(Optional.of(brandToUpdate));
-		Long newModel = 1L;
-		when(modelRepository.findById(newModel)).thenReturn(Optional.of(modelToUpdate));
 		brandService.update(brandPutDto);
 		verify(brandRepository, times(1)).save(any(Brand.class));
 	}
-
+	
 	@Test
 	void getByName_shouldRetunBrand_ifExist() {
 		Brand brand = new Brand();
@@ -61,7 +64,42 @@ public class BrandServiceTest {
 		when(brandRepository.getByName(brandName)).thenReturn(Optional.of(brand));
 		Brand extractedBrand = brandService.getByName(brandName);
 		verify(brandRepository, times(1)).getByName(brandName);
-		assertTrue(!extractedBrand.equals(null));
+		assertNotNull(extractedBrand);
 	}
+	
+	@Test
+	void save_shouldSaveBrand_ifNotAlreadyExists() {
+		BrandPostDto brandPostDto = new BrandPostDto();
+		brandPostDto.setName("newBrand");
+		when(brandRepository.getByName("newBrand")).thenReturn(Optional.empty());
+		brandService.save(brandPostDto);
+		verify(brandRepository, times(1)).save(any(Brand.class));		
+	}
+	
+	@Test
+	void save_shouldNotSaveBrand_ifAlreadyExist() {
+		BrandPostDto brandPostDto = new BrandPostDto();
+		brandPostDto.setName("newBrand");
+		Brand brand = new Brand();
+		when(brandRepository.getByName("newBrand")).thenReturn(Optional.of(brand));
+		assertThrows(EntityAlreadyExistException.class, () -> brandService.save(brandPostDto));
+	}
+	
+	@Test
+	void getDtoById_shouldReturnDtoClass_byId() {
+		Brand brand = new Brand();
+		brand.setId(33L);
+		brand.setName("name");
+		BrandDto brandDto = new BrandDto();
+		brandDto.setId(33L);		
+		brandDto.setName("name");
+		when(brandRepository.findById(1L)).thenReturn(Optional.of(brand));
+		when(brandConverter.convertToDto(brand)).thenReturn(brandDto);
+		BrandDto actualBrand = brandService.getDtoById(1L);
+		assertEquals(actualBrand, brandDto);
+		
+	
+	}
+	
 
 }

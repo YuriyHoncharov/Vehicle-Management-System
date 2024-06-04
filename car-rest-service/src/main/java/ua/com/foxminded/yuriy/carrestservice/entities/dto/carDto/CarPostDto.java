@@ -1,8 +1,6 @@
 package ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto;
 
 import java.util.List;
-import java.util.Set;
-
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
