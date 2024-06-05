@@ -17,15 +17,14 @@ import ua.com.foxminded.yuriy.carrestservice.repository.BrandRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.BrandConverter;
 
-
 @Service
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
 
 	private final BrandRepository brandRepository;
 	private final BrandConverter brandConverter;
-
 	@Override
+	
 	public Long delete(Long id) {
 		brandRepository.deleteById(id);
 		return id;
