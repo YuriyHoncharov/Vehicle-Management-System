@@ -1,5 +1,7 @@
 package ua.com.foxminded.yuriy.carrestservice.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,27 +24,32 @@ import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 @AllArgsConstructor
 public class ModelController {
 	private final ModelService modelService;
+	private static final Logger log = LoggerFactory.getLogger(ModelController.class);
 
 	@PostMapping
 	public ResponseEntity<ModelDto> save(@RequestBody @Valid ModelPostDto model) {
+		log.info("Calling save() method with JSON input : {}",  model);
 		ModelDto createdModel = modelService.save(model);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdModel);
 	}
 
 	@PutMapping
 	public ResponseEntity<ModelDto> update(@RequestBody @Valid ModelPutDto model) {
+		log.info("Calling update() method with JSON input : {}" ,model);
 		ModelDto updatedModel = modelService.update(model);
 		return ResponseEntity.status(HttpStatus.OK).body(updatedModel);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ModelDto> delete(@PathVariable(value = "id") Long id) {
+		log.info("Calling delete() for ID : {}", id);
 		modelService.delete(id);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<ModelDto> get(@PathVariable(value = "id") Long id) {
+		log.info("Calling get() for ID : {}", id);
 		ModelDto model = modelService.getDtoById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(model);
 	}

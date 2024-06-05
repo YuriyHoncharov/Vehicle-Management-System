@@ -1,5 +1,7 @@
 package ua.com.foxminded.yuriy.carrestservice.exception.restexceptionhandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -21,10 +23,13 @@ import ua.com.foxminded.yuriy.carrestservice.exception.customexception.Validatio
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
+
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		String error = "Malformed JSON request";
+		log.info("HttpMessageNotReadableException: {}", error);
 		return buildResponseEntity(new ApiError(HttpStatus.NOT_FOUND, error, ex));
 	}
 
@@ -36,12 +41,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
 		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex);
 		apiError.setMessage(ex.getMessage());
+		log.info("EntityNotFoundException: {}", ex.getMessage());
 		return buildResponseEntity(apiError);
 	}
 
 	@ExceptionHandler({ FilterIllegalArgumentException.class })
 	protected ResponseEntity<Object> handleFilterIllegalArgumentException(FilterIllegalArgumentException ex) {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex);
+		log.info("FilterIllegalArgumentException: {}", ex.getMessage());
 		apiError.setMessage(ex.getMessage());
 		return buildResponseEntity(apiError);
 	}
@@ -50,13 +57,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleEntityAlreadyExists(EntityAlreadyExistException ex) {
 		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex);
 		apiError.setMessage(ex.getMessage());
+		log.info("EntityAlreadyExistException: {}", ex.getMessage());
 		return buildResponseEntity(apiError);
 	}
-	
+
 	@ExceptionHandler({ ValidationException.class })
 	protected ResponseEntity<Object> handleValidationExceptions(ValidationException ex) {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex);
 		apiError.setMessage(ex.getMessage());
+		log.info("ValidationException: {}", ex.getMessage());
 		return buildResponseEntity(apiError);
 	}
 
