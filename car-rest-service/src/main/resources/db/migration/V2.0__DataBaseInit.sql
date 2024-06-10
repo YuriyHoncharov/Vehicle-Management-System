@@ -17,7 +17,7 @@ FOREIGN KEY (brand_Id) REFERENCES brand (id) ON DELETE CASCADE
 
 CREATE TABLE IF NOT EXISTS car(
 id SERIAL PRIMARY KEY,
-object_Id text NOT NULL,
+object_Id text NOT NULL UNIQUE,
 brand_Id int,
 FOREIGN KEY (brand_Id) REFERENCES brand (id) ON DELETE CASCADE,
 production_year int,

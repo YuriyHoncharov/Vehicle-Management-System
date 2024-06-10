@@ -2,12 +2,16 @@ package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
@@ -20,15 +24,22 @@ import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CategoryConverter;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-	private final CategoryRepository categoryRepository;
-	private final CategoryConverter categoryConverter;
+	private CategoryRepository categoryRepository;
+	private CategoryConverter categoryConverter;
+	
+	@Autowired
+	public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryConverter categoryConverter) {
+		this.categoryRepository = categoryRepository;
+		this.categoryConverter = categoryConverter;
+	}
 
 	@Override
+	@Transactional
 	public Long delete(Long id) {
 		categoryRepository.deleteById(id);
 		return id;
 	}
-	
+
 	@Transactional
 	@Override
 	public CategoryDto save(@Valid CategoryPostDto category) {
@@ -40,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryConverter.convertToDto(categoryRepository.save(newCategory));
 
 	}
-	
+
 	@Transactional
 	@Override
 	public CategoryDto update(@Valid CategoryPutDto category) {
@@ -78,10 +89,15 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Category with following ID not found : " + id.toString()));
 	}
-	
+
 	@Transactional
 	@Override
 	public Set<Category> saveAll(Set<Category> categories) {
 		return new HashSet<>(categoryRepository.saveAll(categories));
+	}
+
+	@Override
+	public CategoryDtoPage getAll(Pageable pageable) {
+		return categoryConverter.convertoToCategoryDtoPage(categoryRepository.findAll(pageable));
 	}
 }

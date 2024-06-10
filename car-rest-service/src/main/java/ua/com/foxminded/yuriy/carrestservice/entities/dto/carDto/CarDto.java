@@ -4,7 +4,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryBasicDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.BasicDataDto;
 
 @Data
 public class CarDto {
@@ -13,16 +13,16 @@ public class CarDto {
 	private Long id;
 	@NotNull
 	@NotBlank
-	private String brand;
+	private BasicDataDto brand;
 	@NotNull
 	@NotBlank
 	private String objectId;
 	@NotNull
 	@NotBlank
-	private String model;
+	private BasicDataDto model;
 	@NotNull
 	@NotBlank
 	private int productionYear;
 	@NotNull
-	private List<CategoryBasicDto> categories;
+	private List<BasicDataDto> categories;
 }

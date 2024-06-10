@@ -1,13 +1,13 @@
-package ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto;
+package ua.com.foxminded.yuriy.carrestservice.entities.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CategoryBasicDto {
+public class BasicDataDto {
 	@NotNull
-	private Long id;
+	private long id;
 	@NotNull
 	@NotBlank
 	private String name;
