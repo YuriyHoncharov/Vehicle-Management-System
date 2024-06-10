@@ -1,7 +1,12 @@
 package ua.com.foxminded.yuriy.carrestservice.exception.customexception;
 
-public class ValidationException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+import ua.com.foxminded.yuriy.carrestservice.exception.restexceptionhandler.HTTPException;
+
+public class ValidationException extends HTTPException {
 	public ValidationException(String message) {
-		super(message);
+		super(message, HttpStatus.BAD_REQUEST.value());
+		ExceptionLogger.logException(this);
 	}
 }

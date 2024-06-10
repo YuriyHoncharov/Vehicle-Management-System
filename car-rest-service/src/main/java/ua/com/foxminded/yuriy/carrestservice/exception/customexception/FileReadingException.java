@@ -1,7 +1,12 @@
 package ua.com.foxminded.yuriy.carrestservice.exception.customexception;
 
-public class FileReadingException extends RuntimeException{
+import org.springframework.http.HttpStatus;
+
+import ua.com.foxminded.yuriy.carrestservice.exception.restexceptionhandler.HTTPException;
+
+public class FileReadingException extends HTTPException{
  public FileReadingException(String message) {
-	 super(message);
+	 super(message, HttpStatus.BAD_REQUEST.value());
+	 ExceptionLogger.logException(this);
  }
 }

@@ -18,20 +18,26 @@ import ua.com.foxminded.yuriy.carrestservice.utils.FilesReader;
 @Profile("!test")
 public class DataGenerator {
 
-	@Autowired
 	private CsvImportService csvImportService;
-	@Autowired
 	private FilesReader filesReader;
+	private CsvDataHandler csvDataHandler;
+
 	@Autowired
-	private CsvDataHandler csvDataHandler;	
+	public DataGenerator(CsvImportService csvImportService, FilesReader filesReader, CsvDataHandler csvDataHandler) {
+		this.csvImportService = csvImportService;
+		this.filesReader = filesReader;
+		this.csvDataHandler = csvDataHandler;
+	}
+
 	@Value("${dataFile}")
 	private String dataFilePath;
-	
+
 	@PostConstruct
-	public void generateData() {		
+	public void generateData() {
 		File file = new File(dataFilePath);
 		List<String[]> dataFromCsv = filesReader.readCSVRecords(file);
 		List<CsvFileData> data = csvDataHandler.convertToDTOs(dataFromCsv);
-		csvImportService.loadToDataBase(data);		
+		csvImportService.loadToDataBase(data);
 	}
+
 }

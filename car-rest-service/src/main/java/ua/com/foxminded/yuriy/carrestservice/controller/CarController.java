@@ -1,9 +1,9 @@
 package ua.com.foxminded.yuriy.carrestservice.controller;
 
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,12 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
@@ -28,13 +23,17 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
 import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 
 @RestController
-@RequestMapping("/api/v1/cars")
-@AllArgsConstructor
+@RequestMapping("/api/v1/car")
 public class CarController {
 
-	private final CarService carService;
+	private CarService carService;
+
+	@Autowired
+	public CarController(CarService carService) {
+		this.carService = carService;
+	}
+
 	private static final Logger log = LoggerFactory.getLogger(CarController.class);
-	private final ObjectMapper objectMapper;
 
 	@PostMapping
 	public ResponseEntity<CarDto> save(@RequestBody @Valid CarPostDto car) {
@@ -51,10 +50,10 @@ public class CarController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<CarDto> delete(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<String> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
 		carService.delete(id);
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body("Car deleted : " + id);
 	}
 
 	@GetMapping("/{id}")
@@ -64,18 +63,10 @@ public class CarController {
 		return ResponseEntity.status(HttpStatus.OK).body(car);
 	}
 
-	@GetMapping
+	@GetMapping("/list")
 	public ResponseEntity<CarDtoPage> getAllCars(@RequestParam(required = false) Map<String, String> filters) {
-		String logJson;
-		try {
-			logJson = objectMapper.writeValueAsString(filters);
-			log.info("Calling getAllCars() method with JSON input : {}", logJson);
-		} catch (JsonProcessingException e) {
-			log.error("Failed to convert filters to JSON", e);
-			e.printStackTrace();
-		}
+		log.info("Calling getAllCars() method with JSON input : {}", filters);
 		CarDtoPage carDtoPage = carService.getAll(filters);
-		log.info("Calling getAll() method");
 		return ResponseEntity.status(HttpStatus.OK).body(carDtoPage);
 	}
 }

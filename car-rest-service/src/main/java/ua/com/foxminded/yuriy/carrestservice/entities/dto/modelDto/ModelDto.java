@@ -3,6 +3,7 @@ package ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.BasicDataDto;
 
 @Data
 public class ModelDto {
@@ -11,7 +12,5 @@ public class ModelDto {
 	@NotNull
 	@NotBlank
 	private String name;
-	@NotNull
-	@NotBlank
-	private String brand;
+	private BasicDataDto brand;
 }

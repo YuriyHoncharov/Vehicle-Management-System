@@ -9,6 +9,5 @@ public class ModelPostDto {
 	@NotNull
 	@NotBlank
 	private String name;
-	@NotNull
 	private Long brandId;
 }

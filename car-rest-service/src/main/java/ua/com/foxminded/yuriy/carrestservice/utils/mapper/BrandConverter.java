@@ -16,6 +16,10 @@ public class BrandConverter {
 		BrandDto brandDto = new BrandDto();
 		brandDto.setName(brand.getName());
 		brandDto.setId(brand.getId());
+		if (brand.getModels() != null && !brand.getModels().isEmpty()) {
+			brandDto.setModels(brand.getModels().stream().map(BasicDataDtoConverter::convertToBasicDataDto)
+					.collect(Collectors.toList()));
+		}
 		return brandDto;
 	}
 

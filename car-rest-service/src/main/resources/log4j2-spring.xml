@@ -30,8 +30,8 @@
 			<AppenderRef ref="ConsoleOutput" />
 			<AppenderRef ref="LogFile" />
 		</Root>
-
-		<logger name="ua.com.foxminded.carrestservice" level="trace" additivity="false">
+		<logger name="ua.com.foxminded.carrestservice" level="trace"
+			additivity="false">
 			<appender-ref ref="LogFile" />
 			<appender-ref ref="ConsoleOutput" />
 		</logger>

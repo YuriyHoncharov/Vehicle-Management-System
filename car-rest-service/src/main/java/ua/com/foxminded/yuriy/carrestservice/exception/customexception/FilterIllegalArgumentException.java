@@ -8,6 +8,7 @@ public class FilterIllegalArgumentException extends HTTPException{
 
 	public FilterIllegalArgumentException(String message) {
 		super(message, HttpStatus.BAD_REQUEST.value());
+		ExceptionLogger.logException(this);
 		
 	}
 

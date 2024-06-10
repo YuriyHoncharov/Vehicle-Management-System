@@ -49,7 +49,7 @@ class BrandControllerTest {
 
         when(brandService.save(brandPostDto)).thenReturn(brandDto);
 
-        mockMvc.perform(post("/api/v1/brands")
+        mockMvc.perform(post("/api/v1/brand")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(brandPostDto)))
                 .andExpect(status().isCreated())
@@ -69,7 +69,7 @@ class BrandControllerTest {
 
         when(brandService.update(brandPutDto)).thenReturn(brandDto);
 
-        mockMvc.perform(put("/api/v1/brands")
+        mockMvc.perform(put("/api/v1/brand")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(brandPutDto)))
                 .andExpect(status().isOk())
@@ -80,7 +80,7 @@ class BrandControllerTest {
     @Test
     void delete_shouldDeleteBrandSuccessfully() throws Exception {
         Long id = 1L;
-        mockMvc.perform(delete("/api/v1/brands/{id}", id))
+        mockMvc.perform(delete("/api/v1/brand/{id}", id))
                 .andExpect(status().isOk());
     }
 
@@ -93,7 +93,7 @@ class BrandControllerTest {
         
         when(brandService.getDtoById(id)).thenReturn(brandDto);
         
-        mockMvc.perform(get("/api/v1/brands/{id}", id))
+        mockMvc.perform(get("/api/v1/brand/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(brandDto.getId()))
