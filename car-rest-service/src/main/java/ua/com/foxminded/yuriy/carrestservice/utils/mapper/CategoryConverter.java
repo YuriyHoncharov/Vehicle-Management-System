@@ -4,7 +4,6 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryBasicDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDtoPage;
 
@@ -25,12 +24,5 @@ public class CategoryConverter {
 		categoryDtoPage
 				.setCategories(categoreis.getContent().stream().map(this::convertToDto).collect(Collectors.toList()));
 		return categoryDtoPage;
-	}
-	
-	public CategoryBasicDto convertToBasic(Category category) {
-		CategoryBasicDto categoryBasicDto = new CategoryBasicDto();
-		categoryBasicDto.setId(category.getId());
-		categoryBasicDto.setName(category.getName());
-		return categoryBasicDto;
-	}
+	}	
 }

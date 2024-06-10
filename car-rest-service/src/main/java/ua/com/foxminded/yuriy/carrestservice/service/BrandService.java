@@ -1,8 +1,10 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
 import java.util.Set;
+import org.springframework.data.domain.Pageable;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDto;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPutDto;
 
@@ -22,6 +24,6 @@ public interface BrandService {
 	
 	Set<Brand>saveAll(Set<Brand>brands);
 	
-	Brand getByIdAndName(String name, Long id);
+	BrandDtoPage getAll (Pageable pageable);
 	
 }

@@ -10,11 +10,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ua.com.foxminded.yuriy.carrestservice.entities.dto.BasicDataDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryBasicDto;
 import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,7 +45,7 @@ class CarControllerTest {
 		Map<String, String> filters = new HashMap<>();
 		CarDtoPage carPage = new CarDtoPage();
 		when(carService.getAll(filters)).thenReturn(carPage);
-		mockMvc.perform(get("/api/v1/cars")).andExpect(status().isOk());
+		mockMvc.perform(get("/api/v1/car/list")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -59,7 +59,7 @@ class CarControllerTest {
 		carPostDto.setObjectId("111");
 		carPostDto.setProductionYear(1);
 		carPostDto.setCategories(categories);
-		mockMvc.perform(post("/api/v1/cars").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/api/v1/car").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(carPostDto))).andExpect(status().isCreated());
 	}
 
@@ -74,32 +74,32 @@ class CarControllerTest {
 		carPut.setModelId(1L);
 		carPut.setObjectId("11");
 		carPut.setProductionYear(2020);
-		mockMvc.perform(put("/api/v1/cars").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(put("/api/v1/car").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(carPut))).andExpect(status().isOk());
 	}
 
 	@Test
 	void delete_shouldDeleteCarSuccessfully() throws Exception {
 		Long id = 1L;
-		mockMvc.perform(delete("/api/v1/cars/{id}", id)).andExpect(status().isOk());
+		mockMvc.perform(delete("/api/v1/car/{id}", id)).andExpect(status().isOk());
 	}
 
 	@Test
 	void get_shouldReturnCarById() throws Exception {
 		Long id = 1L;
 		CarDto carDto = new CarDto();
-		List<CategoryBasicDto> categories = new ArrayList<>();
-		CategoryBasicDto catDto = new CategoryBasicDto();
+		List<BasicDataDto> categories = new ArrayList<>();
+		BasicDataDto catDto = new BasicDataDto();
 		catDto.setId(1L);
 		catDto.setName("nameDto");
 		categories.add(catDto);
-		carDto.setBrand("brand");
+		carDto.setBrand(new BasicDataDto());
 		carDto.setId(1L);
-		carDto.setModel("model");
+		carDto.setModel(new BasicDataDto());
 		carDto.setProductionYear(1);
 		carDto.setCategories(categories);
 		when(carService.getById(id)).thenReturn(carDto);
-		mockMvc.perform(get("/api/v1/cars/{id}", id)).andExpect(status().isOk())
+		mockMvc.perform(get("/api/v1/car/{id}", id)).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.id").value(carDto.getId())).andExpect(jsonPath("$.brand").value(carDto.getBrand()));
 	}

@@ -58,7 +58,7 @@ class ModelControllerTest {
         
         when(modelService.save(modelPostDto)).thenReturn(modelDto);
         
-        mockMvc.perform(post("/api/v1/models")
+        mockMvc.perform(post("/api/v1/model")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(modelPostDto)))
                 .andExpect(status().isCreated())
@@ -79,7 +79,7 @@ class ModelControllerTest {
 
         when(modelService.update(modelPutDto)).thenReturn(modelDto);
 
-        mockMvc.perform(put("/api/v1/models")
+        mockMvc.perform(put("/api/v1/model")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(modelPutDto)))
                 .andExpect(status().isOk())
@@ -91,7 +91,7 @@ class ModelControllerTest {
     void delete_shouldDeleteModelSuccessfully() throws Exception {
         Long id = 1L;
 
-        mockMvc.perform(delete("/api/v1/models/{id}", id))
+        mockMvc.perform(delete("/api/v1/model/{id}", id))
                 .andExpect(status().isOk());
     }
 
@@ -104,7 +104,7 @@ class ModelControllerTest {
 
         when(modelService.getDtoById(id)).thenReturn(modelDto);
 
-        mockMvc.perform(get("/api/v1/models/{id}", id))
+        mockMvc.perform(get("/api/v1/model/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(modelDto.getId()))

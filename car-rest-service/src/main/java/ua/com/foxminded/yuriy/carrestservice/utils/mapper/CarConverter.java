@@ -3,23 +3,20 @@ package ua.com.foxminded.yuriy.carrestservice.utils.mapper;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 
 @Component
-@RequiredArgsConstructor
 public class CarConverter {
-
-	private final CategoryConverter categoryConverter;
 
 	public CarDto convertToDto(Car car) {
 		CarDto carDto = new CarDto();
-		carDto.setBrand(car.getBrand().getName());
+		carDto.setObjectId(car.getObjectId());
+		carDto.setBrand(BasicDataDtoConverter.convertToBasicDataDto(car.getBrand()));
 		carDto.setCategories(
-				car.getCategory().stream().map(categoryConverter::convertToBasic).collect(Collectors.toList()));
-		carDto.setModel(car.getModel().getName());
+				car.getCategory().stream().map(BasicDataDtoConverter::convertToBasicDataDto).collect(Collectors.toList()));
+		carDto.setModel(BasicDataDtoConverter.convertToBasicDataDto(car.getModel()));
 		carDto.setProductionYear(car.getProductionYear());
 		carDto.setId(car.getId());
 		return carDto;

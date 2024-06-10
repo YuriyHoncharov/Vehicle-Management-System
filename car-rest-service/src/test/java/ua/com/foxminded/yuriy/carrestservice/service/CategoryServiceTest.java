@@ -17,16 +17,13 @@ import ua.com.foxminded.yuriy.carrestservice.repository.CategoryRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.impl.CategoryServiceImpl;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CategoryConverter;
 
-
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
 
 	@Mock
 	private CategoryRepository categoryRepository;
-	
 	@Mock
 	private CategoryConverter categoryConverter;
-	
 	@InjectMocks
 	private CategoryServiceImpl categoryService;
 	
@@ -39,8 +36,7 @@ class CategoryServiceTest {
 		newCategory.setName(categoryName);
 		categoryService.save(newCategory);
 		verify(categoryRepository, times(1)).save(any());
-	}
-	
+	}	
 	@Test
 	void getByName_shouldThrowException_ifNotExist() {
 		String nonExistingCategory = "NotExist";

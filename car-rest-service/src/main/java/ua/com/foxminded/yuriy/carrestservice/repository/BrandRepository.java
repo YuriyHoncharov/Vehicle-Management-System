@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 
 public interface BrandRepository extends JpaRepository<Brand, Long> {
@@ -14,8 +15,5 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
 	
 	Optional<Brand> findById (Long id);
 	
-	Optional <Brand> findByIdAndName(Long id, String name);
-	
 	Optional<Brand>findByName (String name);
-		
 }

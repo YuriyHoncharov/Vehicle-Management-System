@@ -42,7 +42,7 @@ class CarServiceIT {
 		filters.put("year", YEAR_2018);
 		CarDtoPage page = carService.getAll(filters);
 		assertTrue(page.getCars().stream().allMatch(
-				car -> car.getBrand().equals(BRAND_TOYOTA) && car.getProductionYear() == Integer.valueOf(YEAR_2018)));
+				car -> car.getBrand().getName().equals(BRAND_TOYOTA) && car.getProductionYear() == Integer.valueOf(YEAR_2018)));
 	}
 
 	@Test
@@ -57,8 +57,8 @@ class CarServiceIT {
 		car.setObjectId("11111");
 		car.setProductionYear(199);
 		CarDto updatedCar = carService.update(car);
-		assertEquals("BMW", updatedCar.getBrand());
-		assertEquals("3 Series", updatedCar.getModel());
+		assertEquals("BMW", updatedCar.getBrand().getName());
+		assertEquals("3 Series", updatedCar.getModel().getName());
 		assertEquals(199 ,updatedCar.getProductionYear());
 	}
 
@@ -73,8 +73,8 @@ class CarServiceIT {
 		categories.add(1L);
 		carPost.setCategories(categories);
 		CarDto carDto = carService.save(carPost);
-		assertEquals(BRAND_TOYOTA, carDto.getBrand());
-		assertEquals("Camry", carDto.getModel());
+		assertEquals(BRAND_TOYOTA, carDto.getBrand().getName());
+		assertEquals("Camry", carDto.getModel().getName());
 	}
 
 	@Test

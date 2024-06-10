@@ -20,5 +20,4 @@ public class CarPutDto {
 	private Long modelId;
 	@NotEmpty
 	private List<Long> categories;
-
 }
