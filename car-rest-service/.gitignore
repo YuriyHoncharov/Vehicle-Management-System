@@ -9,6 +9,9 @@ target/
 # Log file
 *.log
 
+# Ignore log folder
+logs/
+
 # Package Files #
 *.jar
 *.war
