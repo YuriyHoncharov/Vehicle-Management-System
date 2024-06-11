@@ -10,7 +10,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPu
 
 public interface CategoryService {
 
-	Long delete(Long id);
+	void delete(Long id);
 
 	CategoryDto save(CategoryPostDto category);
 

@@ -2,13 +2,11 @@ package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
@@ -23,14 +21,13 @@ import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.ModelConverter;
 
 @Service
+@Slf4j
 public class ModelServiceImpl implements ModelService {
 
 	private ModelRepository modelRepository;
 	private ModelConverter modelConverter;
 	private BrandService brandService;
-	private final Logger logger = LoggerFactory.getLogger(ModelServiceImpl.class);
 
-	@Autowired
 	public ModelServiceImpl(ModelRepository modelRepository, ModelConverter modelConverter, BrandService brandService) {
 		this.modelRepository = modelRepository;
 		this.modelConverter = modelConverter;
@@ -39,9 +36,8 @@ public class ModelServiceImpl implements ModelService {
 
 	@Override
 	@Transactional
-	public Long delete(Long id) {
+	public void delete(Long id) {
 		modelRepository.deleteById(id);
-		return id;
 	}
 
 	@Transactional
@@ -83,12 +79,6 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public Model getByNameAndBrandId(String name, Long brandId) {
-		return modelRepository.getByNameAndBrandId(name, brandId)
-				.orElseThrow(() -> new EntityNotFoundException("Model not found"));
-	}
-
-	@Override
 	public Model getById(Long id) {
 		return modelRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + id.toString()));
@@ -103,16 +93,26 @@ public class ModelServiceImpl implements ModelService {
 
 	@Override
 	public ModelDtoPage getAll(Pageable pageable) {
-		return modelConverter.convertToModelDtoOPage(modelRepository.findAll(pageable));
+		log.info("Calling getAll() with following pagealbe param : page - {}, sort - {}, size - {}  ",
+				pageable.getPageNumber(), pageable.getSort(), pageable.getPageSize());
+		try {
+			ModelDtoPage result = modelConverter.convertToModelDtoOPage(modelRepository.findAll(pageable));
+			log.info("Successfully fetched and converted data.");
+			return result;
+		} catch (Exception e) {
+			log.error("Error occurred while fetching data: ", e);
+			throw e;
+		}
 	}
 
 	private boolean checkIfModelExists(String name, Long brandId) {
-		try {
-			Model existingModel = getByNameAndBrandId(name, brandId);
-			return existingModel.getName().equals(name) && existingModel.getBrand().getId().equals(brandId);
-		} catch (EntityNotFoundException e) {
-			logger.info("Model with following name : {}, and following brand id : {} not exists.", name, brandId);
-			return false;
+		log.trace("Entering checkIfModelExists() method with parameters: name - {}, brandId - {}", name, brandId);
+		boolean exists = modelRepository.getByNameAndBrandId(name, brandId).isPresent();
+		if (exists) {
+			log.debug("Model exists for name: {}, brandId: {}", name, brandId);
+		} else {
+			log.info("Model with name: {}, and brandId: {} does not exist.", name, brandId);
 		}
+		return exists;
 	}
 }

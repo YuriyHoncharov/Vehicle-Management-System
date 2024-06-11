@@ -63,16 +63,6 @@ class BrandServiceTest {
 	}
 
 	@Test
-	void getByName_shouldRetunBrand_ifExist() {
-		Brand brand = new Brand();
-		String brandName = "brandTest";
-		when(brandRepository.getByName(brandName)).thenReturn(Optional.of(brand));
-		Brand extractedBrand = brandService.getByName(brandName);
-		verify(brandRepository, times(1)).getByName(brandName);
-		assertNotNull(extractedBrand);
-	}
-
-	@Test
 	void save_shouldSaveBrand_ifNotAlreadyExists() {
 		BrandPostDto brandPostDto = new BrandPostDto();
 		brandPostDto.setName("newBrand");
@@ -81,7 +71,7 @@ class BrandServiceTest {
 		brandPostDto.setModels(models);
 		Model model = new Model("MODEL");
 		model.setId(1L);
-		when(brandRepository.getByName("newBrand")).thenReturn(Optional.empty());
+		when(brandRepository.findByName("newBrand")).thenReturn(Optional.empty());
 		when(modelRepository.findById(1L)).thenReturn(Optional.of(model));
 		brandService.save(brandPostDto);
 		verify(brandRepository, times(1)).save(any(Brand.class));
@@ -92,7 +82,7 @@ class BrandServiceTest {
 		BrandPostDto brandPostDto = new BrandPostDto();
 		brandPostDto.setName("newBrand");
 		Brand brand = new Brand();
-		when(brandRepository.getByName("newBrand")).thenReturn(Optional.of(brand));
+		when(brandRepository.findByName("newBrand")).thenReturn(Optional.of(brand));
 		assertThrows(EntityAlreadyExistException.class, () -> brandService.save(brandPostDto));
 	}
 

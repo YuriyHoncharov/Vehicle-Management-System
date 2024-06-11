@@ -92,7 +92,7 @@ class ModelControllerTest {
         Long id = 1L;
 
         mockMvc.perform(delete("/api/v1/model/{id}", id))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
