@@ -81,7 +81,7 @@ class BrandControllerTest {
     void delete_shouldDeleteBrandSuccessfully() throws Exception {
         Long id = 1L;
         mockMvc.perform(delete("/api/v1/brand/{id}", id))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

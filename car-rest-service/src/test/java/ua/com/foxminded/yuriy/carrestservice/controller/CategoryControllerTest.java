@@ -81,7 +81,7 @@ class CategoryControllerTest {
         Long id = 1L;
 
         mockMvc.perform(delete("/api/v1/category/{id}", id))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

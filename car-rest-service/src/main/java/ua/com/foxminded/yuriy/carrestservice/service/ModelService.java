@@ -12,15 +12,13 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
 
 public interface ModelService {
 
-	Long delete(Long id);
+	void delete(Long id);
 
 	ModelDto save(ModelPostDto model);
 
 	ModelDto update(ModelPutDto model);
 
 	ModelDto getDtoById(Long id);
-
-	Model getByNameAndBrandId(String name, Long brandId);
 
 	Model getById(Long id);
 	

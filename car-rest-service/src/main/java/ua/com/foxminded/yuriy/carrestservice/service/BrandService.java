@@ -10,20 +10,18 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPutDto;
 
 public interface BrandService {
 
-	Long delete(Long id);
+	void delete(Long id);
 
 	BrandDto save(BrandPostDto brand);
-	
+
 	BrandDto update(BrandPutDto brand);
 
 	BrandDto getDtoById(Long id);
-	
-	Brand getByName(String name);
-	
-	Brand getById(Long id);		
-	
-	Set<Brand>saveAll(Set<Brand>brands);
-	
-	BrandDtoPage getAll (Pageable pageable);
-	
+
+	Brand getById(Long id);
+
+	Set<Brand> saveAll(Set<Brand> brands);
+
+	BrandDtoPage getAll(Pageable pageable);
+
 }

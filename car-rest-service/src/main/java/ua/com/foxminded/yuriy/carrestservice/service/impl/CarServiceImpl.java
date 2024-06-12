@@ -3,14 +3,13 @@ package ua.com.foxminded.yuriy.carrestservice.service.impl;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
@@ -31,6 +30,7 @@ import ua.com.foxminded.yuriy.carrestservice.utils.FilterUtils;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CarConverter;
 
 @Service
+@Slf4j
 public class CarServiceImpl implements CarService {
 
 	private CarRepository carRepository;
@@ -42,7 +42,6 @@ public class CarServiceImpl implements CarService {
 	private CarConverter carConverter;
 	private static final String SPLIT_TO_ARRAY = ",";
 
-	@Autowired
 	public CarServiceImpl(CarRepository carRepository, ModelService modelService, BrandService brandService,
 			CategoryService categoryService, FilterUtils filterUtils, SpecificationManager<Car> specificationManager,
 			CarConverter carConverter) {
@@ -57,13 +56,11 @@ public class CarServiceImpl implements CarService {
 
 	@Override
 	@Transactional
-	public Long delete(Long id) {
+	public void delete(Long id) {
 		carRepository.deleteById(id);
-		return id;
 	}
 
 	@Override
-	@Transactional
 	public CarDto save(@Valid CarPostDto car) {
 
 		Brand brand = brandService.getById(car.getBrandId());
@@ -92,15 +89,23 @@ public class CarServiceImpl implements CarService {
 	}
 
 	@Override
-	@Transactional
 	public CarDtoPage getAll(Map<String, String> filters) {
 		Pageable pageReqeust = filterUtils.getPageFromFilters(filters);
+		log.info("Calling getAll() with following pagealbe param : page - {}, sort - {}, size - {}  ",
+				pageReqeust.getPageNumber(), pageReqeust.getSort(), pageReqeust.getPageSize());
 		Specification<Car> specification = null;
 		for (Map.Entry<String, String> entry : filters.entrySet()) {
 			Specification<Car> sc = specificationManager.get(entry.getKey(), entry.getValue().split(SPLIT_TO_ARRAY));
 			specification = specification == null ? Specification.where(sc) : specification.and(sc);
 		}
-		return carConverter.convertToPage(carRepository.findAll(specification, pageReqeust));
+		try {
+			CarDtoPage result = carConverter.convertToPage(carRepository.findAll(specification, pageReqeust));
+			log.info("Successfully fetched and converted data.");
+			return result;
+		} catch (Exception e) {
+			log.error("Error occurred while fetching data: ", e);
+			throw e;
+		}
 	}
 
 	@Override

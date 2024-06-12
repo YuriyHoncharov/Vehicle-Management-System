@@ -1,12 +1,10 @@
 package ua.com.foxminded.yuriy.carrestservice.exception.customexception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 class ExceptionLogger {
-	private static final Logger logger = LoggerFactory.getLogger(ExceptionLogger.class);
-
 	public static void logException(Exception e) {
-		logger.error("Exception occured : {}", e.getMessage());
+		log.error("Exception occured : {}", e.getMessage());
 	}
 }

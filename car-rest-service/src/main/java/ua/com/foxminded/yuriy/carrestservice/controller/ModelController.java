@@ -1,7 +1,5 @@
 package ua.com.foxminded.yuriy.carrestservice.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPostDto;
@@ -22,13 +21,14 @@ import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 
 @RestController
 @RequestMapping("/api/v1/model")
+@Slf4j
 public class ModelController {
+
+	private ModelService modelService;
 
 	public ModelController(ModelService modelService) {
 		this.modelService = modelService;
 	}
-	private ModelService modelService;
-	private static final Logger log = LoggerFactory.getLogger(ModelController.class);
 
 	@PostMapping
 	public ResponseEntity<ModelDto> save(@RequestBody @Valid ModelPostDto model) {
@@ -45,10 +45,10 @@ public class ModelController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> delete(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
 		modelService.delete(id);
-		return ResponseEntity.status(HttpStatus.OK).body("Model deleted : " + id);
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/{id}")
@@ -58,7 +58,7 @@ public class ModelController {
 		return ResponseEntity.status(HttpStatus.OK).body(model);
 	}
 
-	@GetMapping("/list")
+	@GetMapping
 	public ResponseEntity<ModelDtoPage> getAll(Pageable pageable) {
 		ModelDtoPage modelDtoPage = modelService.getAll(pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(modelDtoPage);

@@ -10,7 +10,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
 
 public interface CarService {
 
-	Long delete(Long id);
+	void delete(Long id);
 
 	CarDto save(CarPostDto car);
 	

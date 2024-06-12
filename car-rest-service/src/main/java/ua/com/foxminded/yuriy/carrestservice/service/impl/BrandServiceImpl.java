@@ -1,17 +1,15 @@
 package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Model;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDto;
@@ -26,14 +24,13 @@ import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.BrandConverter;
 
 @Service
+@Slf4j
 public class BrandServiceImpl implements BrandService {
 
 	private BrandRepository brandRepository;
 	private BrandConverter brandConverter;
 	private ModelRepository modelRepository;
-	private final Logger logger = LoggerFactory.getLogger(BrandServiceImpl.class);
 
-	@Autowired
 	public BrandServiceImpl(BrandRepository brandRepository, BrandConverter brandConverter,
 			ModelRepository modelRepository) {
 		this.brandRepository = brandRepository;
@@ -43,9 +40,8 @@ public class BrandServiceImpl implements BrandService {
 
 	@Override
 	@Transactional
-	public Long delete(Long id) {
+	public void delete(Long id) {
 		brandRepository.deleteById(id);
-		return id;
 	}
 
 	@Override
@@ -55,28 +51,39 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	@Override
-	public Brand getByName(String name) {
-		return brandRepository.getByName(name)
-				.orElseThrow(() -> new EntityNotFoundException("Entity with following name not found : " + name));
-	}
-
-	@Override
 	@Transactional
 	public BrandDto save(@Valid BrandPostDto brand) {
 		if (checkIfBrandExists(brand.getName())) {
 			throw new EntityAlreadyExistException("Brand with following name already exists : " + brand.getName());
 		} else {
+			Set<Long> notAddedModelIds = new HashSet<>();
 			Brand newBrand = new Brand();
 			newBrand.setName(brand.getName());
-			Set<Model> models = brand.getModels().stream()
-					.map(modelId -> modelRepository.findById(modelId).orElseThrow(
-							() -> new EntityNotFoundException("Model with following ID was not found : " + modelId)))
-					.filter((model -> model.getBrand() == null || model.getBrand().getName().equals(brand.getName())))
-					.collect(Collectors.toSet());
-			final Brand finalNewBrand = newBrand;
-			models.forEach(model -> model.setBrand(finalNewBrand));
-			newBrand.setModels(models);
-			return brandConverter.convertToDto(brandRepository.save(newBrand));
+			if (brand.getModels() != null) {
+				Set<Model> models = brand.getModels().stream().map(modelId -> {
+					Optional<Model> optionalModel = modelRepository.findById(modelId);
+					if (optionalModel.isPresent()) {
+						Model model = optionalModel.get();
+						if (model.getBrand() == null || model.getBrand().getName().equals(brand.getName())) {
+							return model;
+						} else {
+							notAddedModelIds.add(modelId);
+							return null;
+						}
+					} else {
+						notAddedModelIds.add(modelId);
+						return null;
+					}
+				}).filter(Objects::nonNull).collect(Collectors.toSet());
+				final Brand finalNewBrand = newBrand;
+				models.forEach(model -> model.setBrand(finalNewBrand));
+				newBrand.setModels(models);
+			}
+			BrandDto savedBrand = brandConverter.convertToDto(brandRepository.save(newBrand));
+			if (!notAddedModelIds.isEmpty()) {
+				log.info("Models with the following IDs were not added: {}", notAddedModelIds);
+			}
+			return savedBrand;
 		}
 	}
 
@@ -86,30 +93,50 @@ public class BrandServiceImpl implements BrandService {
 
 		Brand brandToUpdate = getById(brand.getId());
 		Optional<Brand> existingBrandWithName = brandRepository.findByName(brand.getName());
+		Set<Long> notAddedModelIds = new HashSet<>();
 		if (existingBrandWithName.isPresent() && !existingBrandWithName.get().getId().equals(brand.getId())) {
 			throw new EntityAlreadyExistException(
 					"Brand with the name '" + brand.getName() + "' already exists with a different ID.");
 		}
 		if (!brandToUpdate.getName().equals(brand.getName())) {
 			brandToUpdate.setName(brand.getName());
-			Set<Model> models = brand.getModels().stream()
-					.map(modelId -> modelRepository.findById(modelId).orElseThrow(
-							() -> new EntityNotFoundException("Model with following ID was not found : " + modelId)))
-					.filter((model -> model.getBrand() == null || model.getBrand().getName().equals(brand.getName())))
-					.collect(Collectors.toSet());
+		}
+		if (brand.getModels() != null) {
+			Set<Model> models = brand.getModels().stream().map(modelId -> {
+				Optional<Model> optionalModel = modelRepository.findById(modelId);
+				if (optionalModel.isPresent()) {
+					Model model = optionalModel.get();
+					if (model.getBrand() == null || model.getBrand().getName().equals(brand.getName())) {
+						return model;
+					} else {
+						notAddedModelIds.add(modelId);
+						return null;
+					}
+				} else {
+					notAddedModelIds.add(modelId);
+					return null;
+				}
+			}).filter(Objects::nonNull).collect(Collectors.toSet());
+			final Brand finalNewBrand = brandToUpdate;
+			models.forEach(model -> model.setBrand(finalNewBrand));
 			brandToUpdate.setModels(models);
 		}
-		return brandConverter.convertToDto(brandRepository.save(brandToUpdate));
+		BrandDto brandDto = brandConverter.convertToDto(brandRepository.save(brandToUpdate));
+		log.info("Models with the following IDs were not added: {}", notAddedModelIds);
+		return brandDto;
 	}
 
 	private boolean checkIfBrandExists(String name) {
-		try {
-			Brand existingBrand = getByName(name);
-			return existingBrand != null;
-		} catch (EntityNotFoundException e) {
-			logger.info("Brand with following name was not found : {}", name);
+		log.info("Entering checkIfBrandExists with following name param : {}", name);
+		boolean exist = brandRepository.findByName(name).isPresent();
+		if (exist) {
+			log.debug("Brand with following name : {}, exists in db.", name);
+			return exist;
+		} else {
+			log.info("Brand with following name : {}, does not exists in db.", name);
 			return false;
 		}
+
 	}
 
 	@Override
@@ -126,6 +153,15 @@ public class BrandServiceImpl implements BrandService {
 
 	@Override
 	public BrandDtoPage getAll(Pageable pageable) {
-		return brandConverter.convertToPageDto(brandRepository.findAll(pageable));
+		log.info("Calling getAll() with following pagealbe param : page - {}, sort - {}, size - {}  ",
+				pageable.getPageNumber(), pageable.getSort(), pageable.getPageSize());
+		try {
+			BrandDtoPage result = brandConverter.convertToPageDto(brandRepository.findAll(pageable));
+			log.info("Successfully fetched and converted data.");
+			return result;
+		} catch (Exception e) {
+			log.error("Error occurred while fetching data: ", e);
+			throw e;
+		}
 	}
 }

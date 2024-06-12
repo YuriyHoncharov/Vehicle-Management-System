@@ -6,10 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
 import ua.com.foxminded.yuriy.carrestservice.entities.Brand;
 import ua.com.foxminded.yuriy.carrestservice.entities.Car;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
@@ -22,7 +20,6 @@ import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 import ua.com.foxminded.yuriy.carrestservice.utils.CsvFileData;
 
 @Service
-@RequiredArgsConstructor
 public class CsvImportServiceImpl implements CsvImportService {
 
 	private ModelService modelService;
@@ -30,7 +27,6 @@ public class CsvImportServiceImpl implements CsvImportService {
 	private BrandService brandService;
 	private CarService carService;
 
-	@Autowired
 	public CsvImportServiceImpl(ModelService modelService, CategoryService categoryService, BrandService brandService,
 			CarService carService) {
 		this.modelService = modelService;

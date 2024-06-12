@@ -81,7 +81,7 @@ class CarControllerTest {
 	@Test
 	void delete_shouldDeleteCarSuccessfully() throws Exception {
 		Long id = 1L;
-		mockMvc.perform(delete("/api/v1/car/{id}", id)).andExpect(status().isOk());
+		mockMvc.perform(delete("/api/v1/car/{id}", id)).andExpect(status().isNoContent());
 	}
 
 	@Test

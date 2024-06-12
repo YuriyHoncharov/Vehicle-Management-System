@@ -2,13 +2,11 @@ package ua.com.foxminded.yuriy.carrestservice.service.impl;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ua.com.foxminded.yuriy.carrestservice.entities.Category;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDtoPage;
@@ -21,13 +19,12 @@ import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CategoryConverter;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
 	private CategoryRepository categoryRepository;
 	private CategoryConverter categoryConverter;
-	
-	@Autowired
+
 	public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryConverter categoryConverter) {
 		this.categoryRepository = categoryRepository;
 		this.categoryConverter = categoryConverter;
@@ -35,9 +32,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	@Transactional
-	public Long delete(Long id) {
+	public void delete(Long id) {
 		categoryRepository.deleteById(id);
-		return id;
 	}
 
 	@Transactional
@@ -97,7 +93,16 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public CategoryDtoPage getAll(Pageable pageable) {
-		return categoryConverter.convertoToCategoryDtoPage(categoryRepository.findAll(pageable));
+	public CategoryDtoPage getAll(Pageable pageable) {		
+		log.info("Calling getAll() with following pagealbe param : page - {}, sort - {}, size - {}  ",
+				pageable.getPageNumber(), pageable.getSort(), pageable.getPageSize());
+		try {
+			CategoryDtoPage result = categoryConverter.convertoToCategoryDtoPage(categoryRepository.findAll(pageable));
+			log.info("Successfully fetched and converted data.");
+			return result;
+		} catch (Exception e) {
+			log.error("Error occurred while fetching data: ", e);
+			throw e;
+		}
 	}
 }
