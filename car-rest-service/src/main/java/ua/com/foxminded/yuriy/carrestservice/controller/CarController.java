@@ -3,6 +3,7 @@ package ua.com.foxminded.yuriy.carrestservice.controller;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class CarController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('SCOPE_create:resource')")
 	public ResponseEntity<CarDto> save(@RequestBody @Valid CarPostDto car) {
 		log.info("Calling save() method with JSON input : {}", car);
 		CarDto createdCar = carService.save(car);
@@ -39,6 +41,7 @@ public class CarController {
 	}
 
 	@PutMapping
+	@PreAuthorize("hasAuthority('SCOPE_edit:resource')")
 	public ResponseEntity<CarDto> update(@RequestBody @Valid CarPutDto car) {
 		log.info("Calling update() method with JSON input : {}", car);
 		CarDto updatedCar = carService.update(car);
@@ -46,6 +49,7 @@ public class CarController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('SCOPE_delete:resource')")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
 		carService.delete(id);
