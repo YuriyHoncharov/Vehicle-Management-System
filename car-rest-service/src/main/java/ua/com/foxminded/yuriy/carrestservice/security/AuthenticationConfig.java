@@ -22,8 +22,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class AuthenticationConfig {
 
-	private final String[] ALL_ENDPOINTS = { "/api/v1/brand", "/api/v1/car", "/api/v1/model", "/api/v1/category" };
-
 	@Value("${auth0.audience}")
 	private String audience;
 
@@ -36,11 +34,8 @@ public class AuthenticationConfig {
 				.logout(AbstractHttpConfigurer::disable).formLogin(AbstractHttpConfigurer::disable)
 				.cors(AbstractHttpConfigurer::disable)
 				.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(c -> c.requestMatchers(HttpMethod.GET, ALL_ENDPOINTS).permitAll()
-						.requestMatchers(HttpMethod.POST, ALL_ENDPOINTS).hasAuthority("SCOPE_create:resource")
-						.requestMatchers(HttpMethod.DELETE, ALL_ENDPOINTS).hasAuthority("SCOPE_delete:resource")
-						.requestMatchers(HttpMethod.PUT, ALL_ENDPOINTS).hasAuthority("SCOPE_edit:resource").anyRequest()
-						.authenticated())
+				.authorizeHttpRequests(
+						c -> c.requestMatchers(HttpMethod.GET).permitAll().anyRequest().authenticated())
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())).build();
 	}
 
