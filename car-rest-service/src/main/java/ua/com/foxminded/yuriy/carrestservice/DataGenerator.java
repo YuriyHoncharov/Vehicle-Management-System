@@ -35,5 +35,4 @@ public class DataGenerator {
 		List<CsvFileData> data = csvDataHandler.convertToDTOs(dataFromCsv);
 		csvImportService.loadToDataBase(data);
 	}
-
 }

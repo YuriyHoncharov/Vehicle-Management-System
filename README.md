@@ -27,6 +27,6 @@ and following value : "https://dev-ixblodb5nhesv8ts.us.auth0.com/".
 	4.2) Add HEADER/VALUE
 	4.3) Add request Body (client_id,...)
 5) Execute request.
-6) Copy the token you recivied.
+6) Copy the token you recevied.
 7) Enter this token as Bareer Token - Authorization to execute POST/PUT/DELETE requests.
 8) Any GET request is free to be executed without token.
