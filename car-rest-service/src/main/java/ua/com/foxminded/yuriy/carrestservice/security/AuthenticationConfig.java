@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @Configuration
 public class AuthenticationConfig {
-
+	
 	@Value("${auth0.audience}")
 	private String audience;
 
