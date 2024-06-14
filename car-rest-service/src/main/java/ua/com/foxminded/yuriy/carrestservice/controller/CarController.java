@@ -31,21 +31,21 @@ public class CarController {
 		this.carService = carService;
 	}
 
-	@PostMapping
+	@PostMapping	
 	public ResponseEntity<CarDto> save(@RequestBody @Valid CarPostDto car) {
 		log.info("Calling save() method with JSON input : {}", car);
 		CarDto createdCar = carService.save(car);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdCar);
 	}
 
-	@PutMapping
+	@PutMapping	
 	public ResponseEntity<CarDto> update(@RequestBody @Valid CarPutDto car) {
 		log.info("Calling update() method with JSON input : {}", car);
 		CarDto updatedCar = carService.update(car);
 		return ResponseEntity.status(HttpStatus.OK).body(updatedCar);
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{id}")	
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
 		carService.delete(id);

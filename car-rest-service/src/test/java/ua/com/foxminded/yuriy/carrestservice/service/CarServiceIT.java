@@ -19,6 +19,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
+import ua.com.foxminded.yuriy.carrestservice.security.AuthenticationConfig;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -30,6 +31,8 @@ class CarServiceIT {
 
 	@Autowired
 	private CarService carService;
+	@Autowired
+	private AuthenticationConfig authenticationConfig;
 
 	private Map<String, String> filters = new HashMap<>();
 	private static final String BRAND_TOYOTA = "Toyota";

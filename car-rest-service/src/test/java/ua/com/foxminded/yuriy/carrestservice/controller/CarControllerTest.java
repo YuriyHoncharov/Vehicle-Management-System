@@ -45,7 +45,7 @@ class CarControllerTest {
 		Map<String, String> filters = new HashMap<>();
 		CarDtoPage carPage = new CarDtoPage();
 		when(carService.getAll(filters)).thenReturn(carPage);
-		mockMvc.perform(get("/api/v1/car/list")).andExpect(status().isOk());
+		mockMvc.perform(get("/api/v1/car")).andExpect(status().isOk());
 	}
 
 	@Test
