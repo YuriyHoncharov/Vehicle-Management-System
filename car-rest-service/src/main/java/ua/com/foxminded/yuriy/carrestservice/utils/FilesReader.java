@@ -15,8 +15,9 @@ import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FileReadi
 @Component
 @RequiredArgsConstructor
 public class FilesReader {
-	
-	public List<String[]> readCSVRecords(File file) {
+
+	public List<String[]> readCSVRecords(String filePath) {
+		File file = getFile(filePath);
 		List<String[]> records = new ArrayList<>();
 		CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
 
@@ -30,5 +31,9 @@ public class FilesReader {
 			throw new FileReadingException("Error during file reading, check if file exist or content format is correct.");
 		}
 		return records;
+	}
+
+	public File getFile(String filePath) {
+		return new File(filePath);
 	}
 }
