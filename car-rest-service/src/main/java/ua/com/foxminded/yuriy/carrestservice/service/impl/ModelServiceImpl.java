@@ -44,7 +44,7 @@ public class ModelServiceImpl implements ModelService {
 	@Override
 	public ModelDto save(@Valid ModelPostDto model) {
 		if (checkIfModelExists(model.getName(), model.getBrandId())) {
-			throw new EntityAlreadyExistException("Entity with following Model & Brand_ID name already exist : "
+			throw new EntityAlreadyExistException("Entity with following Model name & Brand_ID already exist : "
 					+ model.getName() + " - " + model.getBrandId());
 		}
 		Model newModel = new Model();

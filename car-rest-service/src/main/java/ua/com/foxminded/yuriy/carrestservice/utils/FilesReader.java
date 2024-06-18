@@ -28,11 +28,10 @@ public class FilesReader {
 			}
 			records.remove(0);
 		} catch (Exception e) {
-			throw new FileReadingException("Error during file reading, check if file exist or content format is correct.");
+			throw new FileReadingException("Error during file reading, check if file exist or content format is correct - " + e.getMessage());
 		}
 		return records;
 	}
-
 	public File getFile(String filePath) {
 		return new File(filePath);
 	}
