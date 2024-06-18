@@ -27,8 +27,6 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
-import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 
 @RestController
@@ -114,9 +112,10 @@ public class CarController {
 					@Parameter(name = "brand", description = "Sort cars by Brand name. Multiple sort criteria are supported.", example = "Audi, Chevrolet, Acura", required = false),
 					@Parameter(name = "category", description = "Sort cars by Category name. Multiple sort criteria are supported.", example = "SUV, Sedan, Pickup", required = false),
 					@Parameter(name = "model", description = "Sort cars by Model name. Multiple sort criteria are supported.", example = "Q3, RLX, Encore", required = false),
-					@Parameter(name = "year", description = "Sort cars by Year of Production. Possible to pass 2 parameters : [y0, y1] where (y0) is *MIN* and (y0) *MAX*."
-							+ "If only one parameter is passed - final criteria will be Greater Then Or Equal To the passed parameter"
-							+ "If first parameter (y0) is equal to *zero* - final criteria will be Less or Equal to the second parameter", example = "[2020] | [0,2020] | [2015,2015]", required = false)
+					@Parameter(name = "year", description = "Sort cars by Years [y0, y1] parameters. "
+																			+ "1) Sort cars produced between two years [y0,y1]. (2000, 2020)"
+																			+ "2) Sort cars produced after a specific year [y0]. (2015)"
+																			+ "3)Sort cars produced before a specific year [0, y1]. (0, 2015)", example = "0,2020",	required = false)
 			})					
 		@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = CarDtoPage.class))}),
