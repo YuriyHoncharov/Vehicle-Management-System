@@ -39,7 +39,7 @@ public class BrandController {
 		this.brandService = brandService;
 	}
 	
-	@Operation(description = "Add new Brand to Data Base",
+	@Operation(description = "Add new Brand",
 			summary = "Add New Brand",
 			security = {
 					@SecurityRequirement(name = "Car Service API", scopes = {"create:resource"})})
@@ -71,7 +71,7 @@ public class BrandController {
 		return ResponseEntity.status(HttpStatus.OK).body(updatedBrand);
 	}
 	
-	@Operation(description = "Delete Brand from Data Base",
+	@Operation(description = "Delete Brand",
 			summary = "Delete Brand",
 			security = {
 					@SecurityRequirement(name = "Car Service API", scopes = {"delete:resource"})})
@@ -101,9 +101,9 @@ public class BrandController {
 	@Operation(description = "Get entire list of Brands",
 			summary = "Get All Brands",
 			parameters = {					
-					@Parameter(name = "page", description = "page of pagination", example = "10", required = false),
-					@Parameter(name = "size", description = "Size of the page for pagination", example = "10", required = false),
-					@Parameter(name = "sort", description = "Sorting criteria in the format: property, asc|desc. Default is ascending. Multiple sort criteria are supported.", example = "name,asc", required = false)
+					@Parameter(name = "page", description = "page of pagination, default value = 0", example = "10", required = false),
+					@Parameter(name = "size", description = "Size of the page for pagination, default value = 20", example = "10", required = false),
+					@Parameter(name = "sort", description = "Sorting criteria in the format: property, asc|desc. Default is UNSORTED. Multiple sort criteria are supported.", example = "name,asc", required = false)
 			})					
 		@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = BrandDtoPage.class))}),

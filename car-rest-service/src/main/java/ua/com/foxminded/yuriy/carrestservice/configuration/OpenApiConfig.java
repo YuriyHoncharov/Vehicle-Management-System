@@ -12,10 +12,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
-//@OpenAPIDefinition(info = @Info(contact = @Contact(name = "Yuriy Honcharov", email = "yuriyhoncharov@gmail.com", url = "https://www.linkedin.com/in/yuriy-honcharov-b61752267/"), description = "OpenApi Documentation for Car Service Web Application",title = "OpenApi specification - Car Service", version = "1.0"), servers = @Server(description = "Local ENV", url = "http://localhost:8080"))
-//@Server(description = "Prod ENV", url = "http://localhost:8080")
-//@SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, description = "JWT TOKEN", scheme = "bearer", bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
-//@SecurityRequirement(name = "bearerAuth")
 public class OpenApiConfig {
 	@Bean
 	public OpenAPI customOpenApi() {

@@ -39,7 +39,7 @@ public class ModelController {
 		this.modelService = modelService;
 	}
 	
-	@Operation(description = "Add new Model to Data Base",
+	@Operation(description = "Add new Model",
 			summary = "Add New Model",
 			security = {
 					@SecurityRequirement(name = "Car Service API", scopes = {"create:resource"})})
@@ -72,7 +72,7 @@ public class ModelController {
 		return ResponseEntity.status(HttpStatus.OK).body(updatedModel);
 	}	
 	
-	@Operation(description = "Delete Model from Data Base",
+	@Operation(description = "Delete Model",
 			summary = "Delete Model",
 			security = {
 					@SecurityRequirement(name = "Car Service API", scopes = {"delete:resource"})})
@@ -102,10 +102,11 @@ public class ModelController {
 	@Operation(description = "Get entire list of Models",
 			summary = "Get All Models",
 			parameters = {					
-					@Parameter(name = "page", description = "page of pagination", example = "10", required = false),
-					@Parameter(name = "size", description = "Size of the page for pagination", example = "10", required = false),
-					@Parameter(name = "sort", description = "Sorting criteria in the format: property, asc|desc. Default is ascending. Multiple sort criteria are supported.", example = "name,asc", required = false)
+					@Parameter(name = "page", description = "Page of pagination, default value = 0", example = "10", required = false),
+					@Parameter(name = "size", description = "Size of the page for pagination, default value = 20", example = "10", required = false),
+					@Parameter(name = "sort", description = "Sorting criteria in the format: property, asc|desc. Default is UNSORTED. Multiple sort criteria are supported.", example = "name,asc", required = false)
 			})					
+ 
 		@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ModelDtoPage.class))}),
 		@ApiResponse(responseCode = "403", description = "Error while fetching data")})	

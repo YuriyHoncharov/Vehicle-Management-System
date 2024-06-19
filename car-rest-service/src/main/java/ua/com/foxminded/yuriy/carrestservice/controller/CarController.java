@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -41,7 +40,7 @@ public class CarController {
 		this.carService = carService;
 	}
 	
-	@Operation(description = "Add new Car to Data Base",
+	@Operation(description = "Add new Car",
 			summary = "Add New Car",
 			security = {
 					@SecurityRequirement(name = "Car Service API", scopes = {"create:resource"})})
@@ -75,7 +74,7 @@ public class CarController {
 		return ResponseEntity.status(HttpStatus.OK).body(updatedCar);
 	}
 	
-	@Operation(description = "Delete Car from Data Base",
+	@Operation(description = "Delete Car",
 			summary = "Delete Car",
 			security = {
 					@SecurityRequirement(name = "Car Service API", scopes = {"delete:resource"})})
@@ -105,10 +104,10 @@ public class CarController {
 	@Operation(description = "Get entire list of Cars",
 			summary = "Get All Cars",
 			parameters = {					
-					@Parameter(name = "page", description = "page of pagination", example = "10", required = false),
-					@Parameter(name = "size", description = "Size of the page for pagination", example = "10", required = false),
-					@Parameter(name = "sortOrder", description = "Sorting criteria in the format: asc|desc. Default is ascending. Multiple sort criteria are supported.", example = "name,asc", required = false),
-					@Parameter(name = "sortBy", description = "Sorting criteria in the format: property. Default is Model. Multiple sort criteria are supported.", example = "name,asc", required = false),
+					@Parameter(name = "page", description = "page of pagination, default value = 0", example = "10", required = false),
+					@Parameter(name = "size", description = "Size of the page for pagination, default value = 10", example = "10", required = false),
+					@Parameter(name = "sortOrder", description = "Sorting criteria in the format: asc|desc, default value = asc. Multiple sort criteria are supported.", example = "name,asc", required = false),
+					@Parameter(name = "sortBy", description = "Sorting criteria in the format: property, default value = model. Multiple sort criteria are supported.", example = "name,asc", required = false),
 					@Parameter(name = "brand", description = "Sort cars by Brand name. Multiple sort criteria are supported.", example = "Audi, Chevrolet, Acura", required = false),
 					@Parameter(name = "category", description = "Sort cars by Category name. Multiple sort criteria are supported.", example = "SUV, Sedan, Pickup", required = false),
 					@Parameter(name = "model", description = "Sort cars by Model name. Multiple sort criteria are supported.", example = "Q3, RLX, Encore", required = false),
