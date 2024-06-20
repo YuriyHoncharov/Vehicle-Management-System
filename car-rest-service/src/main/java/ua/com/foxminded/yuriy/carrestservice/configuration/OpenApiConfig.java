@@ -2,6 +2,9 @@ package ua.com.foxminded.yuriy.carrestservice.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -12,7 +15,13 @@ import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
+@Component
 public class OpenApiConfig {
+
+	private final String schemeName = "bearerAuth";
+	private final String bearerFormat = "JWT";
+	private final String scheme = "bearer";
+
 	@Bean
 	public OpenAPI customOpenApi() {
 		return new OpenAPI()
@@ -22,10 +31,8 @@ public class OpenApiConfig {
 						.description("OpenApi Documentation for Car Service Web Application")
 						.title("OpenApi specification - Car Service").version("1.0"))
 				.addServersItem(new Server().description("Local ENV").url("http://localhost:8080"))
-				.addServersItem(new Server().description("Local PROD").url("http://localhost:8080"))
-				.schemaRequirement("bearerAuth",
-						new SecurityScheme().name("bearerAuth").type(Type.HTTP).description("JWT TOKEN").scheme("bearer")
-								.bearerFormat("JWT").in(In.HEADER))
-				.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+				.addSecurityItem(new SecurityRequirement().addList(schemeName))
+				.components(new Components().addSecuritySchemes(schemeName, new SecurityScheme().name(schemeName)
+				.type(Type.HTTP).bearerFormat(bearerFormat).in(In.HEADER).scheme(scheme)));
 	}
 }

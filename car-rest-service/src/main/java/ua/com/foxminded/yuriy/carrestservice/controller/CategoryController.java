@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDt
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
+import ua.com.foxminded.yuriy.carrestservice.exception.restexceptionhandler.ApiError;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 
 @RestController
@@ -38,15 +38,11 @@ public class CategoryController {
 	public CategoryController(CategoryService categoryService) {
 		this.categoryService = categoryService;
 	}
-	@Operation(description = "Add new Category",
-				summary = "Add New Category",
-				security = {
-						@SecurityRequirement(name = "Car Service API", scopes = {"create:resource"})})
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "201", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = CategoryDto.class))}),
-			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
-			@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist")
-	})	
+	@Operation(description = "Add new Category",	summary = "Add New Category")
+		@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "Successful operation"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+			@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@PostMapping
 	public ResponseEntity<CategoryDto> save(@RequestBody @Valid CategoryPostDto category) {
 		log.info("Calling save() method with JSON input : {}", category);
@@ -54,30 +50,22 @@ public class CategoryController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
 	}
 	
-	@Operation(description = "Update Category Information",
-			summary = "Edit Category",
-			security = {
-					@SecurityRequirement(name = "Car Service API", scopes = {"edit:resource"})})
+	@Operation(description = "Update Category Information", summary = "Edit Category")
 		@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = CategoryDto.class))}),
-		@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
-		@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist")
-})	
-	@PutMapping
+				@ApiResponse(responseCode = "200", description = "Successful operation"),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
+})	@PutMapping
 	public ResponseEntity<CategoryDto> update(@RequestBody @Valid CategoryPutDto category) {
 		log.info("Calling update() method with JSON input : {}", category);
 		CategoryDto updatedCategory = categoryService.update(category);
 		return ResponseEntity.status(HttpStatus.OK).body(updatedCategory);
 	}
 	
-	@Operation(description = "Delete Category",
-			summary = "Delete Category",
-			security = {
-					@SecurityRequirement(name = "Car Service API", scopes = {"delete:resource"})})
+	@Operation(description = "Delete Category", summary = "Delete Category")
 		@ApiResponses(value = {
-		@ApiResponse(responseCode = "204", description = "Successful operation"),
-		@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
-})	
+				@ApiResponse(responseCode = "204", description = "Successful operation"),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
@@ -85,11 +73,10 @@ public class CategoryController {
 		return ResponseEntity.noContent().build();
 	}
 	
-	@Operation(description = "Get category by ID",
-			summary = "Get category by ID")					
+	@Operation(description = "Get category by ID", summary = "Get category by ID")					
 		@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = CategoryDto.class))}),
-		@ApiResponse(responseCode = "404", description = "Entity (Category) not Found")})	
+				@ApiResponse(responseCode = "200", description = "Successful operation"),
+				@ApiResponse(responseCode = "404", description = "Entity (Category) not Found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping("/{id}")
 	public ResponseEntity<CategoryDto> get(@PathVariable(value = "id") Long id) {
 		log.info("Calling get() for ID : {}", id);
@@ -97,16 +84,10 @@ public class CategoryController {
 		return ResponseEntity.status(HttpStatus.OK).body(category);
 	}
 	
-	@Operation(description = "Get entire list of categories",
-			summary = "Get All Categories",
-			parameters = {					
-					@Parameter(name = "page", description = "Page of pagination, default value = 0", example = "10", required = false),
-					@Parameter(name = "size", description = "Size of the page for pagination, default value = 20", example = "10", required = false),
-					@Parameter(name = "sort", description = "Sorting criteria in the format: property, asc|desc. Default is UNSORTED. Multiple sort criteria are supported.", example = "name,asc", required = false)
-			})					
+	@Operation(summary = "Get All Categories", description = ("${descriptionCategoryGetAllMethod}"))
 		@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = CategoryDtoPage.class))}),
-		@ApiResponse(responseCode = "403", description = "Error while fetching data")})	
+				@ApiResponse(responseCode = "200", description = "Successful operation"),
+				@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping
 	public ResponseEntity<CategoryDtoPage> getAll(Pageable pageable) {
 		CategoryDtoPage categetoryDtoPage = categoryService.getAll(pageable);

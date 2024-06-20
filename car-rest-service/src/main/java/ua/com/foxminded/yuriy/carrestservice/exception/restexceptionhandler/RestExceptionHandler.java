@@ -16,8 +16,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(value = HTTPException.class)
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HTTPException ex, WebRequest request) {
 		return buildResponseEntity(ex.getMessage(), HttpStatus.valueOf(ex.getCode()), request);
-	}
-
+	}	 
 	private ResponseEntity<Object> buildResponseEntity(String message, HttpStatus httpStatus, WebRequest webRequest) {
 		ApiError apiError = new ApiError(httpStatus.value(), message,
 				webRequest.getDescription(false).replace("uri=", ""));

@@ -14,6 +14,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPo
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FilterIllegalArgumentException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CategoryRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 import ua.com.foxminded.yuriy.carrestservice.utils.mapper.CategoryConverter;
@@ -93,16 +94,14 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public CategoryDtoPage getAll(Pageable pageable) {		
+	public CategoryDtoPage getAll(Pageable pageable) {
 		log.info("Calling getAll() with following pagealbe param : page - {}, sort - {}, size - {}  ",
 				pageable.getPageNumber(), pageable.getSort(), pageable.getPageSize());
 		try {
-			CategoryDtoPage result = categoryConverter.convertoToCategoryDtoPage(categoryRepository.findAll(pageable));
-			log.info("Successfully fetched and converted data.");
-			return result;
+			return categoryConverter.convertoToCategoryDtoPage(categoryRepository.findAll(pageable));
 		} catch (Exception e) {
-			log.error("Error occurred while fetching data: ", e);
-			throw e;
+			log.error("Illegal argument for pagination : {}", pageable.toString());
+			throw new FilterIllegalArgumentException("Illegal argument for pagination : " + pageable.toString());
 		}
 	}
 }

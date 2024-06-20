@@ -19,6 +19,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.carDto.CarPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FilterIllegalArgumentException;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.ValidationException;
 import ua.com.foxminded.yuriy.carrestservice.repository.CarRepository;
 import ua.com.foxminded.yuriy.carrestservice.repository.specification.SpecificationManager;
@@ -99,12 +100,10 @@ public class CarServiceImpl implements CarService {
 			specification = specification == null ? Specification.where(sc) : specification.and(sc);
 		}
 		try {
-			CarDtoPage result = carConverter.convertToPage(carRepository.findAll(specification, pageReqeust));
-			log.info("Successfully fetched and converted data.");
-			return result;
+			return carConverter.convertToPage(carRepository.findAll(specification, pageReqeust));
 		} catch (Exception e) {
-			log.error("Error occurred while fetching data: ", e);
-			throw e;
+			log.error("Illegal argument for pagination : {}", pageReqeust.toString());
+			throw new FilterIllegalArgumentException("Illegal argument for pagination : " + pageReqeust.toString());
 		}
 	}
 
