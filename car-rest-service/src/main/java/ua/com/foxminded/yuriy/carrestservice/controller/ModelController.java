@@ -1,6 +1,5 @@
 package ua.com.foxminded.yuriy.carrestservice.controller;
 
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +41,7 @@ public class ModelController{
 	@Operation(description = "Add new Model", summary = "Add New Model")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "201", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
 				@ApiResponse(responseCode = "409", description = "Entity with given Model name & Brand_ID already exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@PostMapping
 	public ResponseEntity<ModelDto> save(@RequestBody @Valid ModelPostDto model) {
@@ -56,7 +53,7 @@ public class ModelController{
 	@Operation(description = "Update Model Information", summary = "Edit Model")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
 				@ApiResponse(responseCode = "409", description = "Entity with following Model & Brand name already exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
 				@ApiResponse(responseCode = "404", description = "Model with given ID was not found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})		@PutMapping
 	public ResponseEntity<ModelDto> update(@RequestBody @Valid ModelPutDto model) {
@@ -68,7 +65,7 @@ public class ModelController{
 	@Operation(description = "Delete Model", summary = "Delete Model")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "204", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token")})	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);

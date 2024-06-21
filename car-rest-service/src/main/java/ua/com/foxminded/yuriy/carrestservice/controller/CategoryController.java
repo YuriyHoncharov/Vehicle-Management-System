@@ -41,7 +41,7 @@ public class CategoryController {
 	@Operation(description = "Add new Category",	summary = "Add New Category")
 		@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "Successful operation"),
-			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
 			@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@PostMapping
 	public ResponseEntity<CategoryDto> save(@RequestBody @Valid CategoryPostDto category) {
@@ -53,7 +53,7 @@ public class CategoryController {
 	@Operation(description = "Update Category Information", summary = "Edit Category")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
 				@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })	@PutMapping
 	public ResponseEntity<CategoryDto> update(@RequestBody @Valid CategoryPutDto category) {
@@ -65,7 +65,7 @@ public class CategoryController {
 	@Operation(description = "Delete Category", summary = "Delete Category")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "204", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token")})	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);

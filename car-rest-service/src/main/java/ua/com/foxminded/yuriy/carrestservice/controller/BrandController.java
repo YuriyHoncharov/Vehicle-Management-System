@@ -42,7 +42,7 @@ public class BrandController {
 	@Operation(description = "Add new Brand",	summary = "Add New Brand" )					
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "201", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = BrandDto.class))}),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
 				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })
 	@PostMapping
@@ -55,7 +55,7 @@ public class BrandController {
 	@Operation(description = "Update Brand Information",summary = "Edit Brand")
 			@ApiResponses(value = {
 				@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = BrandDto.class))}),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
 				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })	
 	@PutMapping
@@ -68,7 +68,7 @@ public class BrandController {
 	@Operation(description = "Delete Brand" ,summary = "Delete Brand")
 			@ApiResponses(value = {
 				@ApiResponse(responseCode = "204", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token")
 })	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {

@@ -43,7 +43,7 @@ public class CarController {
 	@Operation(description = "Add new Car", summary = "Add New Car")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "201", description = "OK : Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = CarDto.class))}),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
 				@ApiResponse(responseCode = "400", description = "Bad Request : Model and Brand don't match each other", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
 				@ApiResponse(responseCode = "409", description = "Conflict : Car already exist with given ObjectID", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })
@@ -57,7 +57,7 @@ public class CarController {
 	@Operation(description = "Update Car Information",	summary = "Edit Car")
 			@ApiResponses(value = {
 					@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = CarDto.class))}),
-					@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+					@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
 					@ApiResponse(responseCode = "400", description = "Bad Request : Model and Brand don't match each other", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
 					@ApiResponse(responseCode = "409", description = "Conflict : Car already exist with given ObjectID", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })	
@@ -71,8 +71,7 @@ public class CarController {
 	@Operation(description = "Delete Car", summary = "Delete Car")
 			@ApiResponses(value = {
 					@ApiResponse(responseCode = "204", description = "Successful operation"),
-					@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
-})	
+					@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token")})	
 	@DeleteMapping("/{id}")	
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
