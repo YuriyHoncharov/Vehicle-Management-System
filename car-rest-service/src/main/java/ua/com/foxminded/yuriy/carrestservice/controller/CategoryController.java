@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -25,23 +25,25 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryDt
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.categoryDto.CategoryPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.restexceptionhandler.ApiError;
+import ua.com.foxminded.yuriy.carrestservice.properties.SwaggerDescription;
 import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 
 @RestController
 @RequestMapping("/api/v1/category")
 @Slf4j
 @Tag(name = "CATEGORY END-POINTS")
+@SecurityRequirement(name = "bearerAuth")
 public class CategoryController {
 
 	private CategoryService categoryService;
-
 	public CategoryController(CategoryService categoryService) {
 		this.categoryService = categoryService;
 	}
+	
 	@Operation(description = "Add new Category",	summary = "Add New Category")
 		@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "Successful operation"),
-			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
 			@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@PostMapping
 	public ResponseEntity<CategoryDto> save(@RequestBody @Valid CategoryPostDto category) {
@@ -52,9 +54,9 @@ public class CategoryController {
 	
 	@Operation(description = "Update Category Information", summary = "Edit Category")
 		@ApiResponses(value = {
-				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
-				@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
+			@ApiResponse(responseCode = "200", description = "Successful operation"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
+			@ApiResponse(responseCode = "409", description = "Entity (Category) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })	@PutMapping
 	public ResponseEntity<CategoryDto> update(@RequestBody @Valid CategoryPutDto category) {
 		log.info("Calling update() method with JSON input : {}", category);
@@ -64,8 +66,8 @@ public class CategoryController {
 	
 	@Operation(description = "Delete Category", summary = "Delete Category")
 		@ApiResponses(value = {
-				@ApiResponse(responseCode = "204", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token")})	
+			@ApiResponse(responseCode = "204", description = "Successful operation"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class)))})	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
@@ -75,8 +77,8 @@ public class CategoryController {
 	
 	@Operation(description = "Get category by ID", summary = "Get category by ID")					
 		@ApiResponses(value = {
-				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "404", description = "Entity (Category) not Found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+			@ApiResponse(responseCode = "200", description = "Successful operation"),
+			@ApiResponse(responseCode = "404", description = "Entity (Category) not Found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping("/{id}")
 	public ResponseEntity<CategoryDto> get(@PathVariable(value = "id") Long id) {
 		log.info("Calling get() for ID : {}", id);
@@ -84,10 +86,10 @@ public class CategoryController {
 		return ResponseEntity.status(HttpStatus.OK).body(category);
 	}
 	
-	@Operation(summary = "Get All Categories", description = ("${descriptionCategoryGetAllMethod}"))
+	@Operation(summary = "Get All Categories", description = SwaggerDescription.CATEGORY_GET_ALL_DESCRIPTION)
 		@ApiResponses(value = {
-				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+			@ApiResponse(responseCode = "200", description = "Successful operation"),
+			@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping
 	public ResponseEntity<CategoryDtoPage> getAll(Pageable pageable) {
 		CategoryDtoPage categetoryDtoPage = categoryService.getAll(pageable);

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +25,14 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.restexceptionhandler.ApiError;
+import ua.com.foxminded.yuriy.carrestservice.properties.SwaggerDescription;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 
 @RestController
 @RequestMapping("/api/v1/brand")
 @Slf4j
 @Tag(name = "BRAND END-POINTS")
+@SecurityRequirement(name = "bearerAuth")
 public class BrandController {
 
 	private BrandService brandService;
@@ -40,9 +42,9 @@ public class BrandController {
 	}
 	
 	@Operation(description = "Add new Brand",	summary = "Add New Brand" )					
-		@ApiResponses(value = {
-				@ApiResponse(responseCode = "201", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = BrandDto.class))}),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
+		    @ApiResponses(value = {
+				@ApiResponse(responseCode = "201", description = "Successful operation"),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
 				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })
 	@PostMapping
@@ -54,8 +56,8 @@ public class BrandController {
 	
 	@Operation(description = "Update Brand Information",summary = "Edit Brand")
 			@ApiResponses(value = {
-				@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = BrandDto.class))}),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token"),
+				@ApiResponse(responseCode = "200", description = "Successful operation"),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
 				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })	
 	@PutMapping
@@ -68,7 +70,7 @@ public class BrandController {
 	@Operation(description = "Delete Brand" ,summary = "Delete Brand")
 			@ApiResponses(value = {
 				@ApiResponse(responseCode = "204", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token")
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))) 
 })	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
@@ -79,8 +81,8 @@ public class BrandController {
 	
 	@Operation(description = "Get Brand by ID", summary = "Get Brand by ID")					
 			@ApiResponses(value = {
-					@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = BrandDto.class))}),
-					@ApiResponse(responseCode = "404", description = "Entity (Brand) not Found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
+				@ApiResponse(responseCode = "200", description = "Successful operation"),
+				@ApiResponse(responseCode = "404", description = "Entity (Brand) not Found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@GetMapping("/{id}")
 	public ResponseEntity<BrandDto> get(@PathVariable(value = "id") Long id) {
 		log.info("Calling get() method for ID : {}", id);
@@ -88,10 +90,10 @@ public class BrandController {
 		return ResponseEntity.status(HttpStatus.OK).body(brand);
 	}
 	
-	@Operation(summary = "Get All Brands", description = ("${descriptionBrandGetAllMethod}"))						
-		@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = BrandDtoPage.class))}),
-		@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+	@Operation(summary = "Get All Brands", description = SwaggerDescription.BRAND_GET_ALL_DESCRIPTION)						
+		    @ApiResponses(value = {
+		        @ApiResponse(responseCode = "200", description = "Successful operation"),
+		        @ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping
 	public ResponseEntity<BrandDtoPage> getAllBrands(Pageable pageable) {
 		BrandDtoPage brandDtoPage = brandService.getAll(pageable);

@@ -1,14 +1,12 @@
 package ua.com.foxminded.yuriy.carrestservice.utils;
 
 import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FilterIllegalArgumentException;
+import ua.com.foxminded.yuriy.carrestservice.properties.SortingDefaultValues;
 
 @Component
 public class FilterUtils {
@@ -16,18 +14,11 @@ public class FilterUtils {
 	private static final String PAGE = "page";
 	private static final String SIZE = "size";
 	private static final String SORT_BY = "sortBy";
-
-	@Value("${sortBy}")
-	private String defaultSortParameter;
-
-	@Value("${page}")
-	private String defaultPageNumber;
-
-	@Value("${pageSize}")
-	private String defaultPageSize;
-
-	@Value("${sortOrder}")
-	private String defaultSortOrder;
+	
+	private String defaultSortParameter = SortingDefaultValues.SORT_BY;
+	private String defaultPageNumber = SortingDefaultValues.PAGE;
+	private String defaultPageSize = SortingDefaultValues.PAGE_SIZE;
+	private String defaultSortOrder = SortingDefaultValues.SORT_ORDER;
 
 	private static final String ERROR_MESSAGE_PAGE_SIZE = "Page or size can not be null.";
 

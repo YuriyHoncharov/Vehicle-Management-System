@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 public class CarRestServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CarRestServiceApplication.class, args);
+		SpringApplication.run(CarRestServiceApplication.class, args);		
 	}
 	
 	@Bean
