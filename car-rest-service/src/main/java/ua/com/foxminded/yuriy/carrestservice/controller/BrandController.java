@@ -35,7 +35,7 @@ import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 @SecurityRequirement(name = "bearerAuth")
 public class BrandController {
 
-	private BrandService brandService;
+	private final BrandService brandService;
 
 	public BrandController(BrandService brandService) {
 		this.brandService = brandService;

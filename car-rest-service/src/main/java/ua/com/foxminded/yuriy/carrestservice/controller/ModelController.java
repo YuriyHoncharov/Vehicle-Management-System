@@ -35,7 +35,7 @@ import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 @SecurityRequirement(name = "bearerAuth")
 public class ModelController{
 
-	private ModelService modelService;
+	private final ModelService modelService;
 	public ModelController(ModelService modelService) {
 		this.modelService = modelService;
 	}

@@ -35,7 +35,7 @@ import ua.com.foxminded.yuriy.carrestservice.service.CategoryService;
 @SecurityRequirement(name = "bearerAuth")
 public class CategoryController {
 
-	private CategoryService categoryService;
+	private final CategoryService categoryService;
 	public CategoryController(CategoryService categoryService) {
 		this.categoryService = categoryService;
 	}
@@ -92,7 +92,7 @@ public class CategoryController {
 			@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping
 	public ResponseEntity<CategoryDtoPage> getAll(Pageable pageable) {
-		CategoryDtoPage categetoryDtoPage = categoryService.getAll(pageable);
-		return ResponseEntity.status(HttpStatus.OK).body(categetoryDtoPage);
+		CategoryDtoPage categoryDtoPage = categoryService.getAll(pageable);
+		return ResponseEntity.status(HttpStatus.OK).body(categoryDtoPage);
 	}
 }

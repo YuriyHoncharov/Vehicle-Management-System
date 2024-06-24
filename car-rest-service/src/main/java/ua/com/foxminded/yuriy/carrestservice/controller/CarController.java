@@ -36,7 +36,7 @@ import ua.com.foxminded.yuriy.carrestservice.service.CarService;
 @SecurityRequirement(name = "bearerAuth")
 public class CarController {
 
-	private CarService carService;
+	private final CarService carService;
 	public CarController(CarService carService) {
 		this.carService = carService;
 	}
