@@ -1,15 +1,16 @@
-FROM eclipse-temurin:17 AS builder
-WORKDIR /opt/app
+FROM maven:3.9.7-amazoncorretto-17 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
 COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
+COPY mvnw ./
 COPY src/main/resources/static/file.csv src/main/resources/static/
-RUN ./mvnw dependency:go-offline
-COPY ./src ./src
-RUN ./mvnw clean install
+RUN ./mvnw clean package -DskipTests
 
-FROM eclipse-temurin:17 AS final
+FROM eclipse-temurin:17
 WORKDIR /opt/app
 EXPOSE 8080
-COPY --from=builder /opt/app/target/*.jar /opt/app/carservice.jar
-COPY --from=builder /opt/app/src/main/resources/static/file.csv src/main/resources/static/file.csv
+COPY --from=build /app/target/*.jar /opt/app/carservice.jar
+COPY --from=build /app/src/main/resources/static/file.csv src/main/resources/static/file.csv
 ENTRYPOINT ["java", "-jar", "carservice.jar"]
