@@ -44,8 +44,10 @@ public class BrandController {
 	@Operation(description = "Add new Brand",	summary = "Add New Brand" )					
 		    @ApiResponses(value = {
 				@ApiResponse(responseCode = "201", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
-				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token",
+				  content = @Content(schema = @Schema(implementation = Void.class))),
+				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })
 	@PostMapping
 	public ResponseEntity<BrandDto> save(@RequestBody @Valid BrandPostDto brand) {
@@ -57,8 +59,10 @@ public class BrandController {
 	@Operation(description = "Update Brand Information",summary = "Edit Brand")
 			@ApiResponses(value = {
 				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
-				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+				  content = @Content(schema = @Schema(implementation = Void.class))),
+				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})
 })	
 	@PutMapping
 	public ResponseEntity<BrandDto> update(@RequestBody @Valid BrandPutDto brand) {
@@ -70,7 +74,8 @@ public class BrandController {
 	@Operation(description = "Delete Brand" ,summary = "Delete Brand")
 			@ApiResponses(value = {
 				@ApiResponse(responseCode = "204", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))) 
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+				  content = @Content(schema = @Schema(implementation = Void.class))) 
 })	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
@@ -82,7 +87,8 @@ public class BrandController {
 	@Operation(description = "Get Brand by ID", summary = "Get Brand by ID")					
 			@ApiResponses(value = {
 				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "404", description = "Entity (Brand) not Found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
+				@ApiResponse(responseCode = "404", description = "Entity (Brand) not Found", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@GetMapping("/{id}")
 	public ResponseEntity<BrandDto> get(@PathVariable(value = "id") Long id) {
 		log.info("Calling get() method for ID : {}", id);
@@ -93,7 +99,8 @@ public class BrandController {
 	@Operation(summary = "Get All Brands", description = SwaggerDescription.BRAND_GET_ALL_DESCRIPTION)						
 		    @ApiResponses(value = {
 		        @ApiResponse(responseCode = "200", description = "Successful operation"),
-		        @ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+		        @ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", 
+		          content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping
 	public ResponseEntity<BrandDtoPage> getAllBrands(Pageable pageable) {
 		BrandDtoPage brandDtoPage = brandService.getAll(pageable);

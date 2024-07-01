@@ -3,14 +3,12 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline
 COPY src ./src
-COPY .mvn/ .mvn
-COPY mvnw ./
 COPY src/main/resources/static/file.csv src/main/resources/static/
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17
-WORKDIR /opt/app
+WORKDIR /app
 EXPOSE 8080
-COPY --from=build /app/target/*.jar /opt/app/carservice.jar
+COPY --from=build /app/target/*.jar /app/carservice.jar
 COPY --from=build /app/src/main/resources/static/file.csv src/main/resources/static/file.csv
 ENTRYPOINT ["java", "-jar", "carservice.jar"]

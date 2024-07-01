@@ -1,6 +1,5 @@
-package ua.com.foxminded.yuriy.carrestservice.security;
+package ua.com.foxminded.yuriy.carrestservice.configuration;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,13 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
-public class AuthenticationConfig {
-
-	@Value("${auth0.audience}")
-	private String audience;
-
-	@Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-	private String issuer;
+public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain springWebFilterChain(HttpSecurity http) throws Exception {

@@ -76,7 +76,7 @@ public class ModelServiceImpl implements ModelService {
 	@Override
 	public ModelDto getDtoById(Long id) {
 		return modelConverter.convetToModelDto(
-				modelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Model not found")));
+				modelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + id)));
 	}
 
 	@Override

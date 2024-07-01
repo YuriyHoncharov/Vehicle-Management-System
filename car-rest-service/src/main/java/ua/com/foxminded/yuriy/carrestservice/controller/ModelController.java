@@ -43,8 +43,10 @@ public class ModelController{
 	@Operation(description = "Add new Model", summary = "Add New Model")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "201", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
-				@ApiResponse(responseCode = "409", description = "Entity with given Model name & Brand_ID already exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+				  content = @Content(schema = @Schema(implementation = Void.class))),
+				@ApiResponse(responseCode = "409", description = "Entity with given Model name & Brand_ID already exist", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@PostMapping
 	public ResponseEntity<ModelDto> save(@RequestBody @Valid ModelPostDto model) {
 		log.info("Calling save() method with JSON input : {}", model);
@@ -55,9 +57,12 @@ public class ModelController{
 	@Operation(description = "Update Model Information", summary = "Edit Model")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
-				@ApiResponse(responseCode = "409", description = "Entity with following Model & Brand name already exist", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
-				@ApiResponse(responseCode = "404", description = "Model with given ID was not found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})		
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+				  content = @Content(schema = @Schema(implementation = Void.class))),
+				@ApiResponse(responseCode = "409", description = "Entity with following Model & Brand name already exist", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "404", description = "Model with given ID was not found", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})		
 	@PutMapping
 	public ResponseEntity<ModelDto> update(@RequestBody @Valid ModelPutDto model) {
 		log.info("Calling update() method with JSON input : {}", model);
@@ -68,7 +73,8 @@ public class ModelController{
 	@Operation(description = "Delete Model", summary = "Delete Model")
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "204", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class)))})	
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+				  content = @Content(schema = @Schema(implementation = Void.class)))})	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
@@ -79,7 +85,8 @@ public class ModelController{
 	@Operation(description = "Get Model by ID", summary = "Get Model by ID")					
 		@ApiResponses(value = {
 				@ApiResponse(responseCode = "200", description = "Successful operation"),
-				@ApiResponse(responseCode = "404", description = "Entity (Model) not Found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
+				@ApiResponse(responseCode = "404", description = "Entity (Model) not Found", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@GetMapping("/{id}")
 	public ResponseEntity<ModelDto> get(@PathVariable(value = "id") Long id) {
 		log.info("Calling get() for ID : {}", id);
@@ -90,7 +97,8 @@ public class ModelController{
 	@Operation(summary = "Get All Models", description = SwaggerDescription.MODEL_GET_ALL_DESCRIPTION)					
  		@ApiResponses(value = {
  				@ApiResponse(responseCode = "200", description = "Successful operation"),
- 				@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+ 				@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", 
+ 				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping
 	public ResponseEntity<ModelDtoPage> getAll(Pageable pageable) {
 		ModelDtoPage modelDtoPage = modelService.getAll(pageable);

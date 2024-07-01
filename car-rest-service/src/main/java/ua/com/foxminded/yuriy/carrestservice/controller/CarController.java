@@ -44,9 +44,12 @@ public class CarController {
 	@Operation(description = "Add new Car", summary = "Add New Car")
 		@ApiResponses(value = {
 		    @ApiResponse(responseCode = "201", description = "OK : Successful operation"), 
-		    @ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
-		    @ApiResponse(responseCode = "400", description = "Bad Request : Model and Brand don't match each other", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
-		    @ApiResponse(responseCode = "409", description = "Conflict : Car already exist with given ObjectID", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
+		    @ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+		      content = @Content(schema = @Schema(implementation = Void.class))),
+		    @ApiResponse(responseCode = "400", description = "Bad Request : Model and Brand don't match each other", 
+		      content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+		    @ApiResponse(responseCode = "409", description = "Conflict : Car already exist with given ObjectID", 
+		      content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@PostMapping	
 	public ResponseEntity<CarDto> save(@RequestBody @Valid CarPostDto car) {
 		log.info("Calling save() method with JSON input : {}", car);
@@ -57,9 +60,12 @@ public class CarController {
 	@Operation(description = "Update Car Information",	summary = "Edit Car")
 		@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successful operation"),
-			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class))),
-			@ApiResponse(responseCode = "400", description = "Bad Request : Model and Brand don't match each other", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
-			@ApiResponse(responseCode = "409", description = "Conflict : Car already exist with given ObjectID", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+			  content = @Content(schema = @Schema(implementation = Void.class))),
+			@ApiResponse(responseCode = "400", description = "Bad Request : Model and Brand don't match each other", 
+			  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+			@ApiResponse(responseCode = "409", description = "Conflict : Car already exist with given ObjectID", 
+			  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@PutMapping	
 	public ResponseEntity<CarDto> update(@RequestBody @Valid CarPutDto car) {
 		log.info("Calling update() method with JSON input : {}", car);
@@ -70,7 +76,8 @@ public class CarController {
 	@Operation(description = "Delete Car", summary = "Delete Car")
 		@ApiResponses(value = {
 			@ApiResponse(responseCode = "204", description = "Successful operation"),
-			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", content = @Content(schema = @Schema(implementation = Void.class)))})	
+			@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+			  content = @Content(schema = @Schema(implementation = Void.class)))})	
 	@DeleteMapping("/{id}")	
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
@@ -81,7 +88,8 @@ public class CarController {
 	@Operation(description = "Get Car by ID", summary = "Get Car by ID")					
 		@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successful operation"),
-			@ApiResponse(responseCode = "404", description = "Entity (Car) not Found", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
+			@ApiResponse(responseCode = "404", description = "Entity (Car) not Found", 
+			  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@GetMapping("/{id}")
 	public ResponseEntity<CarDto> get(@PathVariable(value = "id") Long id) {
 		log.info("Calling get() for ID : {}", id);
@@ -92,7 +100,8 @@ public class CarController {
 	@Operation(description = SwaggerDescription.CAR_GET_ALL_DESCRIPTION, summary = "Get All Cars")
 		@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successful operation"),
-			@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
+			@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", 
+			  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping
 	public ResponseEntity<CarDtoPage> getAllCars(@RequestParam(required = true) Map<String, String> filters) {
 		log.info("Calling getAllCars() method with JSON input : {}", filters);
