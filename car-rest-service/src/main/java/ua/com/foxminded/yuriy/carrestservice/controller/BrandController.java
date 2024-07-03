@@ -44,7 +44,7 @@ public class BrandController {
 	@Operation(description = "Add new Brand",	summary = "Add New Brand" )					
 		    @ApiResponses(value = {
 				@ApiResponse(responseCode = "201", description = "Successful operation"),
-				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token",
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
 				  content = @Content(schema = @Schema(implementation = Void.class))),
 				@ApiResponse(responseCode = "409", description = "Entity (Brand) already Exist", 
 				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})

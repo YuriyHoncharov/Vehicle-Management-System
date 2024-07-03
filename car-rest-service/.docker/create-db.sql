@@ -1,2 +1,0 @@
-CREATE DATABASE CarService IF NOT EXISTS;
-\c CarService;

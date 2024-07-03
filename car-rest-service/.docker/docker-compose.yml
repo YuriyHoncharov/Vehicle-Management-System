@@ -4,6 +4,8 @@ services:
       context: ..
       dockerfile: .docker/Dockerfile
     image: carapp
+    volumes: 
+      - ../logs:/app/logs
     ports:
       - "8080:8080"
     env_file: ".env"
@@ -20,7 +22,6 @@ services:
       - "5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
 volumes:
   db-data:
   
