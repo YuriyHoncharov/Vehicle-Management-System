@@ -1,13 +1,11 @@
 package ua.com.foxminded.yuriy.carrestservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +20,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.brandDto.BrandPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
 import ua.com.foxminded.yuriy.carrestservice.repository.BrandRepository;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.impl.BrandServiceImpl;
@@ -65,14 +64,10 @@ class BrandServiceTest {
 	@Test
 	void save_shouldSaveBrand_ifNotAlreadyExists() {
 		BrandPostDto brandPostDto = new BrandPostDto();
-		brandPostDto.setName("newBrand");
-		List<Long> models = new ArrayList<>();
-		models.add(1L);
-		brandPostDto.setModels(models);
+		brandPostDto.setName("newBrand");		
 		Model model = new Model("MODEL");
 		model.setId(1L);
 		when(brandRepository.findByName("newBrand")).thenReturn(Optional.empty());
-		when(modelRepository.findById(1L)).thenReturn(Optional.of(model));
 		brandService.save(brandPostDto);
 		verify(brandRepository, times(1)).save(any(Brand.class));
 	}
@@ -98,7 +93,19 @@ class BrandServiceTest {
 		when(brandConverter.convertToDto(brand)).thenReturn(brandDto);
 		BrandDto actualBrand = brandService.getDtoById(1L);
 		assertEquals(actualBrand, brandDto);
-
+	}
+	
+	@Test
+	void update_shouldThrowEntityNotFoundException_whenBrandNameNotExists() {
+	    BrandPutDto brandPutDto = new BrandPutDto();
+	    Long brandId = 1L;
+	    brandPutDto.setId(brandId);
+	    brandPutDto.setName("testBrand"); 	    
+	    Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+	        brandService.update(brandPutDto);
+	    });	    
+	    assertEquals("Brand with following ID not found : " + brandPutDto.getId(), exception.getMessage());
+	    verify(brandRepository, times(0)).save(any(Brand.class)); // Ensure save method was not called
 	}
 
 }

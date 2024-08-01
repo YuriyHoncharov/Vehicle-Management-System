@@ -1,13 +1,11 @@
 package ua.com.foxminded.yuriy.carrestservice.utils;
 
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FilterIllegalArgumentException;
 
 @Component
@@ -16,16 +14,13 @@ public class FilterUtils {
 	private static final String PAGE = "page";
 	private static final String SIZE = "size";
 	private static final String SORT_BY = "sortBy";
-
+	
 	@Value("${sortBy}")
 	private String defaultSortParameter;
-
 	@Value("${page}")
 	private String defaultPageNumber;
-
 	@Value("${pageSize}")
 	private String defaultPageSize;
-
 	@Value("${sortOrder}")
 	private String defaultSortOrder;
 

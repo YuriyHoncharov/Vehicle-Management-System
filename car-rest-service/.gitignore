@@ -2,6 +2,9 @@
 target/
 
 .project
+.classpath
+mvnw
+mvnw.cmd
 
 # Compiled class file
 *.class
@@ -11,6 +14,9 @@ target/
 
 # Ignore log folder
 logs/
+
+#Ignore maven folder
+.mvn/
 
 # Package Files #
 *.jar

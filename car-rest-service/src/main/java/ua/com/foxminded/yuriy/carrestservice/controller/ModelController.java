@@ -11,53 +11,94 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelDtoPage;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
+import ua.com.foxminded.yuriy.carrestservice.exception.restexceptionhandler.ApiError;
+import ua.com.foxminded.yuriy.carrestservice.properties.SwaggerDescription;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
 
 @RestController
 @RequestMapping("/api/v1/model")
 @Slf4j
-public class ModelController {
+@Tag(name = "MODEL END-POINTS")
+@SecurityRequirement(name = "bearerAuth")
+public class ModelController{
 
-	private ModelService modelService;
-
+	private final ModelService modelService;
 	public ModelController(ModelService modelService) {
 		this.modelService = modelService;
 	}
-
+	
+	@Operation(description = "Add new Model", summary = "Add New Model")
+		@ApiResponses(value = {
+				@ApiResponse(responseCode = "201", description = "Successful operation"),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+				  content = @Content(schema = @Schema(implementation = Void.class))),
+				@ApiResponse(responseCode = "409", description = "Entity with given Model name & Brand_ID already exist", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@PostMapping
 	public ResponseEntity<ModelDto> save(@RequestBody @Valid ModelPostDto model) {
 		log.info("Calling save() method with JSON input : {}", model);
 		ModelDto createdModel = modelService.save(model);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdModel);
 	}
-
+	
+	@Operation(description = "Update Model Information", summary = "Edit Model")
+		@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Successful operation"),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+				  content = @Content(schema = @Schema(implementation = Void.class))),
+				@ApiResponse(responseCode = "409", description = "Entity with following Model & Brand name already exist", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))}),
+				@ApiResponse(responseCode = "404", description = "Model with given ID was not found", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})		
 	@PutMapping
 	public ResponseEntity<ModelDto> update(@RequestBody @Valid ModelPutDto model) {
 		log.info("Calling update() method with JSON input : {}", model);
 		ModelDto updatedModel = modelService.update(model);
 		return ResponseEntity.status(HttpStatus.OK).body(updatedModel);
-	}
-
+	}	
+	
+	@Operation(description = "Delete Model", summary = "Delete Model")
+		@ApiResponses(value = {
+				@ApiResponse(responseCode = "204", description = "Successful operation"),
+				@ApiResponse(responseCode = "401", description = "Unauthorized & Incorrect Token", 
+				  content = @Content(schema = @Schema(implementation = Void.class)))})	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
 		log.info("Calling delete() for ID : {}", id);
 		modelService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
+	
+	@Operation(description = "Get Model by ID", summary = "Get Model by ID")					
+		@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Successful operation"),
+				@ApiResponse(responseCode = "404", description = "Entity (Model) not Found", 
+				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})
 	@GetMapping("/{id}")
 	public ResponseEntity<ModelDto> get(@PathVariable(value = "id") Long id) {
 		log.info("Calling get() for ID : {}", id);
 		ModelDto model = modelService.getDtoById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(model);
 	}
-
+																						
+	@Operation(summary = "Get All Models", description = SwaggerDescription.MODEL_GET_ALL_DESCRIPTION)					
+ 		@ApiResponses(value = {
+ 				@ApiResponse(responseCode = "200", description = "Successful operation"),
+ 				@ApiResponse(responseCode = "400", description = "Filter Illegal Argument - Incorrect page/size/etc.. parameters", 
+ 				  content = {@Content (mediaType = "application/json", schema = @Schema(implementation = ApiError.class))})})	
 	@GetMapping
 	public ResponseEntity<ModelDtoPage> getAll(Pageable pageable) {
 		ModelDtoPage modelDtoPage = modelService.getAll(pageable);

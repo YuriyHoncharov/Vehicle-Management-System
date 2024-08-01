@@ -15,6 +15,7 @@ import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPostDto;
 import ua.com.foxminded.yuriy.carrestservice.entities.dto.modelDto.ModelPutDto;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityAlreadyExistException;
 import ua.com.foxminded.yuriy.carrestservice.exception.customexception.EntityNotFoundException;
+import ua.com.foxminded.yuriy.carrestservice.exception.customexception.FilterIllegalArgumentException;
 import ua.com.foxminded.yuriy.carrestservice.repository.ModelRepository;
 import ua.com.foxminded.yuriy.carrestservice.service.BrandService;
 import ua.com.foxminded.yuriy.carrestservice.service.ModelService;
@@ -44,7 +45,7 @@ public class ModelServiceImpl implements ModelService {
 	@Override
 	public ModelDto save(@Valid ModelPostDto model) {
 		if (checkIfModelExists(model.getName(), model.getBrandId())) {
-			throw new EntityAlreadyExistException("Entity with following Model & Brand_ID name already exist : "
+			throw new EntityAlreadyExistException("Entity with following Model name & Brand_ID already exist : "
 					+ model.getName() + " - " + model.getBrandId());
 		}
 		Model newModel = new Model();
@@ -75,7 +76,7 @@ public class ModelServiceImpl implements ModelService {
 	@Override
 	public ModelDto getDtoById(Long id) {
 		return modelConverter.convetToModelDto(
-				modelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Model not found")));
+				modelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Model with following ID was not found : " + id)));
 	}
 
 	@Override
@@ -96,12 +97,10 @@ public class ModelServiceImpl implements ModelService {
 		log.info("Calling getAll() with following pagealbe param : page - {}, sort - {}, size - {}  ",
 				pageable.getPageNumber(), pageable.getSort(), pageable.getPageSize());
 		try {
-			ModelDtoPage result = modelConverter.convertToModelDtoOPage(modelRepository.findAll(pageable));
-			log.info("Successfully fetched and converted data.");
-			return result;
+			return modelConverter.convertToModelDtoOPage(modelRepository.findAll(pageable));
 		} catch (Exception e) {
-			log.error("Error occurred while fetching data: ", e);
-			throw e;
+			log.error("Illegal argument for pagination : {}", pageable.toString());
+			throw new FilterIllegalArgumentException("Illegal argument for pagination : " + pageable.toString());
 		}
 	}
 

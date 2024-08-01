@@ -1,6 +1,5 @@
 package ua.com.foxminded.yuriy.carrestservice;
 
-import java.io.File;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -30,8 +29,7 @@ public class DataGenerator {
 
 	@PostConstruct
 	public void generateData() {
-		File file = new File(dataFilePath);
-		List<String[]> dataFromCsv = filesReader.readCSVRecords(file);
+		List<String[]> dataFromCsv = filesReader.readCSVRecords(dataFilePath);
 		List<CsvFileData> data = csvDataHandler.convertToDTOs(dataFromCsv);
 		csvImportService.loadToDataBase(data);
 	}

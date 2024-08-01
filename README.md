@@ -1,19 +1,19 @@
-##POSTMAN - POST REQUEST TO RECIVE OAUTH2 TOKEN
+# POSTMAN - POST REQUEST TO RECIVE OAUTH2 TOKEN
 
 [URL] : "https://dev-ixblodb5nhesv8ts.us.auth0.com/oauth/token"
 
-## HEADER KEY/VALUE
+# HEADER KEY/VALUE
 
 [content-type]: "application/json"
 
-## BODY KEY/VALUE
+# BODY KEY/VALUE
 
 [client_id] : "TFU9ovbad4Em55KmtGcOh10Bx6vM0S36"
 [client_secret] : "urFOAfeDSM9AJNb_9qH65d-sc1XrwzMgW8BuFL-lswPwjgCilRJiGDERvd-s2z2L"
 [audience] : "https://www.xoxoxo.com/"
 [grant_type] : "client_credentials"
 
-## RUN PROJECT - INSTRUCTIONS
+# RUN PROJECT - INSTRUCTIONS
 
 1) Open your local system variables environment
 2) Add new variable with following name : "AUDIENCE_CAR_SERVICE_ADMIN"
